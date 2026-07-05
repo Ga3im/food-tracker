@@ -1,5 +1,5 @@
 import { MonthCalendar } from "../../components/Calendar/Calendar";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { useAppDispatch, useAppSelector } from "../../store";
@@ -65,10 +65,8 @@ export const Dashboard = () => {
     snack: 3,
   } as const;
 
-  const displayItems = useMemo(
-    () =>
-      [...dayData.items].sort((a, b) => mealOrder[a.meal] - mealOrder[b.meal]),
-    [dayData.items]
+  const displayItems = dayData?.items.sort(
+    (a, b) => mealOrder[a.meal] - mealOrder[b.meal]
   );
 
   return (
