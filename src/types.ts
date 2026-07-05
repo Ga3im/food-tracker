@@ -1,7 +1,7 @@
 export type mealType = "breakfast" | "lunch" | "dinner" | "snack";
 
 export type mealEntry = {
-  meal: mealType;
+  meal: mealType | null;
   id: string;
   productName: string;
   weight: number;

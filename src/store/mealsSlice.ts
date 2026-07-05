@@ -18,18 +18,20 @@ export const initialFormState = {
   calories: 0,
 };
 
-const getTodayDate = () => {
-  return new Date().toLocaleDateString("ru-RU", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "2-digit",
-  }); // Вернет "22.04.26"
-};
+// const getTodayDate = () => {
+//   return new Date().toLocaleDateString("ru-RU", {
+//     day: "2-digit",
+//     month: "2-digit",
+//     year: "2-digit",
+//   }); // Вернет "22.04.26"
+// };
 
-const savedProducts: ProductType[] = JSON.parse(
-  localStorage.getItem("products")
-);
+const savedProductsRaw = localStorage.getItem("products");
 
+const savedProducts: ProductType[] = savedProductsRaw
+  ? JSON.parse(savedProductsRaw)
+  : [];
+  
 const initialState: MealStateType = {
   nutritional: initialFormState,
   product: savedProducts ? savedProducts : products,

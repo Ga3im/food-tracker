@@ -10,7 +10,7 @@ export const Dashboard = () => {
   const [touchStart, setTouchStart] = useState<{ x: number; y: number } | null>(
     null
   );
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const { product, nutritional } = useAppSelector((state) => state.meal);
   const dispatch = useAppDispatch();
   const meals = ["breakfast", "lunch", "dinner"];
@@ -155,7 +155,7 @@ export const Dashboard = () => {
               </div>
             ) : (
               <div className="space-y-6">
-                {displayItems.map((item, index, array) => {
+                {displayItems?.map((item, index, array) => {
                   const prev = array[index - 1];
                   const showHeader = !prev || prev.meal !== item.meal;
 

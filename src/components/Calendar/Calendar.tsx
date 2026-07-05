@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import {
   format,
   startOfMonth,
@@ -13,7 +13,15 @@ import {
 } from "date-fns";
 import { ru } from "date-fns/locale";
 
-export const MonthCalendar = ({ selectedDate, setSelectedDate }) => {
+type MonthCalendarType = {
+  selectedDate: Date;
+  setSelectedDate: Dispatch<SetStateAction<Date>>;
+};
+
+export const MonthCalendar = ({
+  selectedDate,
+  setSelectedDate,
+}: MonthCalendarType) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   // Логика генерации дней
