@@ -65,9 +65,20 @@ export const Dashboard = () => {
     snack: 3,
   } as const;
 
-  const displayItems = dayData?.items.sort(
-    (a, b) => mealOrder[a.meal] - mealOrder[b.meal]
-  );
+const displayItems = dayData?.items 
+  ? [...dayData.items].sort((a, b) => {
+      // Функция для безопасного получения веса приема пищи
+      const getOrder = (meal: string | null) => {
+        // Проверяем, существует ли meal и есть ли он среди ключей mealOrder
+        if (meal && meal in mealOrder) {
+          return mealOrder[meal as keyof typeof mealOrder];
+        }
+        return 999; // Если meal равен null или это неизвестный тип — отправляем в конец
+      };
+
+      return getOrder(a.meal) - getOrder(b.meal);
+    }) 
+  : [];
 
   return (
     <div

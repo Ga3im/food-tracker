@@ -31,7 +31,7 @@ const savedProductsRaw = localStorage.getItem("products");
 const savedProducts: ProductType[] = savedProductsRaw
   ? JSON.parse(savedProductsRaw)
   : [];
-  
+
 const initialState: MealStateType = {
   nutritional: initialFormState,
   product: savedProducts ? savedProducts : products,
@@ -46,7 +46,7 @@ export const mealSlice = createSlice({
       action: PayloadAction<{
         date: string;
         nutritional: mealEntry;
-        meal: mealType;
+        meal: mealType | null;
       }>
     ) => {
       const { date, nutritional, meal } = action.payload;
