@@ -34,7 +34,7 @@ const savedProducts: ProductType[] = savedProductsRaw
 
 const initialState: MealStateType = {
   nutritional: initialFormState,
-  product: savedProducts ? savedProducts : products,
+  product: savedProductsRaw ? savedProducts : products,
 };
 
 export const mealSlice = createSlice({

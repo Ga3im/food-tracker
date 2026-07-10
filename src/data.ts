@@ -1,6 +1,6 @@
 import type { ProductType } from "./types";
 
-export const products:ProductType[] = [
+export const products: ProductType[] = [
   {
     date: "22.04.26",
     items: [
