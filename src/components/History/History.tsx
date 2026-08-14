@@ -1,14 +1,10 @@
 import { format } from "date-fns";
 import { Calendar } from "../Calendar/Calendar";
-import { useState, type Dispatch } from "react";
+import { useState } from "react";
 import { ru } from "date-fns/locale";
 import { useAppSelector } from "../../store";
 
-type HistoryProp = {
-  setActiveTab: Dispatch<"actions" | "history" | "both">;
-};
-
-export const History = ({ setActiveTab }: HistoryProp) => {
+export const History = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const { product } = useAppSelector((state) => state.meal);
 
@@ -110,10 +106,16 @@ export const History = ({ setActiveTab }: HistoryProp) => {
               </p>
               <h3 className="text-3xl font-black">
                 {totals.calories}{" "}
-                <span className="text-lg font-normal text-slate-400">ккал</span>
+                {dayData.dailyLimit && dayData.dailyLimit.cals > 0
+                  ? `/ ${dayData.dailyLimit.cals}`
+                  : null}
+                <span className="text-lg font-normal text-slate-400">
+                  {" "}
+                  Ккал
+                </span>
               </h3>
             </div>
-            <div
+            {/* <div
               onClick={() => setActiveTab("actions")}
               className="bg-indigo-600 p-3 rounded-2xl"
             >
@@ -129,7 +131,7 @@ export const History = ({ setActiveTab }: HistoryProp) => {
               >
                 <path d="M12 20v-8m0 0V4m0 8h8m-8 0H4" />
               </svg>
-            </div>
+            </div> */}
           </div>
 
           <div className="grid grid-cols-3 gap-4 border-t border-slate-800 pt-6">
@@ -139,6 +141,9 @@ export const History = ({ setActiveTab }: HistoryProp) => {
               </p>
               <p className="text-lg font-bold">
                 {totals.proteins}
+                {dayData.dailyLimit && dayData.dailyLimit.protein > 0
+                  ? `/ ${dayData.dailyLimit.protein}`
+                  : null}{" "}
                 <span className="text-xs ml-0.5 text-slate-500">г</span>
               </p>
             </div>
@@ -147,7 +152,10 @@ export const History = ({ setActiveTab }: HistoryProp) => {
                 Жиры
               </p>
               <p className="text-lg font-bold">
-                {totals.fats}
+                {totals.fats}{" "}
+                {dayData.dailyLimit && dayData.dailyLimit.fat > 0
+                  ? `/ ${dayData.dailyLimit.fat}`
+                  : null}
                 <span className="text-xs ml-0.5 text-slate-500">г</span>
               </p>
             </div>
@@ -157,6 +165,9 @@ export const History = ({ setActiveTab }: HistoryProp) => {
               </p>
               <p className="text-lg font-bold">
                 {totals.carbs}
+                {dayData.dailyLimit && dayData.dailyLimit.carb > 0
+                  ? `/ ${dayData.dailyLimit.carb}`
+                  : null}
                 <span className="text-xs ml-0.5 text-slate-500">г</span>
               </p>
             </div>

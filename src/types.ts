@@ -11,7 +11,15 @@ export type mealEntry = {
   calories: number;
 };
 
-export type ProductType = {
+export type productType = {
   date: string;
+  dailyLimit?: dailyGoalsType;
   items: mealEntry[];
+};
+
+export type dailyGoalsType = {
+  protein: number;
+  fat: number;
+  carb: number;
+  cals: number;
 };

@@ -1,6 +1,6 @@
-import type { ProductType } from "./types";
+import type { productType } from "./types";
 
-export const products: ProductType[] = [
+export const products: productType[] = [
   {
     date: "22.04.26",
     items: [

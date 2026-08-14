@@ -1,13 +1,15 @@
 import { useIsDesktop } from "../../hooks/useIsDesktop";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { setNutritional } from "../../store/mealsSlice";
+import type { mealType } from "../../types";
 
 export const Options = () => {
   const { nutritional } = useAppSelector((state) => state.meal);
   const dispatch = useAppDispatch();
-  const meals = ["breakfast", "lunch", "dinner"];
+  const meals: mealType[] = ["breakfast", "lunch", "dinner"];
   const { isDesktop } = useIsDesktop();
-  const handleMealClick = (meal: string) => {
+
+  const handleMealClick = (meal: mealType) => {
     dispatch(setNutritional({ ...nutritional, meal: meal }));
   };
 

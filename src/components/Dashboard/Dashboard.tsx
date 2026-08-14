@@ -19,7 +19,7 @@ export const Dashboard = () => {
       setActiveTab("actions");
     }
   }, [isDesktop]);
-  
+
   const handleTouchStart = (e: React.TouchEvent) =>
     setTouchStart({
       ...touchStart,
@@ -65,11 +65,11 @@ export const Dashboard = () => {
 
       {activeTab === "actions" && <Options />}
 
-      {activeTab === "history" && <History setActiveTab={setActiveTab} />}
+      {activeTab === "history" && <History />}
 
       {activeTab === "both" && (
         <div className="md:grid md:grid-cols-2">
-          <History setActiveTab={setActiveTab} />
+          <History />
           <Options />
         </div>
       )}
