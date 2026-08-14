@@ -12,24 +12,25 @@ import {
   subMonths,
 } from "date-fns";
 import { ru } from "date-fns/locale";
+import { useAppSelector } from "../../store";
 
 type MonthCalendarType = {
   selectedDate: Date;
   setSelectedDate: Dispatch<SetStateAction<Date>>;
 };
 
-export const MonthCalendar = ({
+export const Calendar = ({
   selectedDate,
   setSelectedDate,
 }: MonthCalendarType) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
+  const { product } = useAppSelector((state) => state.meal);
   // Логика генерации дней
   const firstDayOfMonth = startOfMonth(currentMonth);
   const lastDayOfMonth = endOfMonth(currentMonth);
   const startDate = startOfWeek(firstDayOfMonth, { weekStartsOn: 1 });
   const endDate = endOfWeek(lastDayOfMonth, { weekStartsOn: 1 });
-
   const calendarDays = eachDayOfInterval({ start: startDate, end: endDate });
 
   const weekDays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
@@ -39,6 +40,23 @@ export const MonthCalendar = ({
   const formattedDate = date.toLocaleDateString("ru-RU", {
     day: "numeric",
     month: "long",
+  });
+
+  const daysWithData = new Set<string>();
+  product.forEach((item) => {
+    const parts = item.date.split(".");
+    if (parts.length !== 3) return;
+
+    const [dayStr, monthStr, yearShort] = parts;
+
+    // Сравниваем месяц и год текущего календаря с датой из данных
+    const currentMonthStr = format(currentMonth, "MM");
+    const currentYearStr = format(currentMonth, "yy");
+
+    if (monthStr === currentMonthStr && yearShort === currentYearStr) {
+      // Добавляем день в формате "05", "10" и т.д.
+      daysWithData.add(dayStr.padStart(2, "0"));
+    }
   });
 
   return (
@@ -102,7 +120,8 @@ export const MonthCalendar = ({
             const isSelected = isSameDay(day, selectedDate);
             const isCurrentMonth = isSameMonth(day, firstDayOfMonth);
             const isToday = isSameDay(day, new Date());
-
+            const dayKey = format(day, "dd");
+            const hasData = daysWithData.has(dayKey);
             return (
               <button
                 key={day.toString()}
@@ -127,7 +146,7 @@ export const MonthCalendar = ({
                 </span>
 
                 {/* Точка, если есть данные (имитация) */}
-                {isCurrentMonth && (
+                {hasData && isCurrentMonth && (
                   <div
                     className={`w-1 h-1 rounded-full mt-0.5 ${
                       isSelected ? "bg-white" : "bg-indigo-400"

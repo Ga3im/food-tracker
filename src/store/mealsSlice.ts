@@ -1,10 +1,14 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { mealEntry, mealType, ProductType } from "../types";
+import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit";
+import type { mealEntry, mealType, productType, dailyGoalsType } from "../types";
 import { products } from "../data";
+import { db } from "../db";
 
 type MealStateType = {
   nutritional: mealEntry;
-  product: ProductType[];
+  product: productType[];
+  isSetting: boolean;
+  dailyGoals: dailyGoalsType;
+  status: 'idle' | 'loading' | 'succeeded' | 'failed'; // статус загрузки БД
 };
 
 export const initialFormState = {
@@ -18,24 +22,25 @@ export const initialFormState = {
   calories: 0,
 };
 
-// const getTodayDate = () => {
-//   return new Date().toLocaleDateString("ru-RU", {
-//     day: "2-digit",
-//     month: "2-digit",
-//     year: "2-digit",
-//   }); // Вернет "22.04.26"
-// };
-
-const savedProductsRaw = localStorage.getItem("products");
-
-const savedProducts: ProductType[] = savedProductsRaw
-  ? JSON.parse(savedProductsRaw)
-  : [];
-
 const initialState: MealStateType = {
   nutritional: initialFormState,
-  product: savedProducts ? savedProducts : products,
+  product: products, // стартовые дефолтные продукты, если БД пуста
+  isSetting: false,
+  dailyGoals: { protein: 0, fat: 0, carb: 0, cals: 0 },
+  status: 'idle'
 };
+
+// Асинхронный экшен для первоначальной загрузки данных из IndexedDB
+export const loadOfflineData = createAsyncThunk("meal/loadOfflineData", async () => {
+  const offlineProducts = await db.product.toArray();
+  // В IndexedDB мы сохраняли цели под ключом 'current'
+  const offlineGoals = await db.dailyGoals.get('current'); 
+  
+  return {
+    products: offlineProducts.length > 0 ? offlineProducts : null,
+    dailyGoals: offlineGoals || null
+  };
+});
 
 export const mealSlice = createSlice({
   name: "meal",
@@ -53,15 +58,11 @@ export const mealSlice = createSlice({
 
       const calculatedProduct = {
         ...nutritional,
-        meal: meal, // Сохраняем тип, чтобы потом фильтровать
-        proteins: Math.floor(
-          nutritional.proteins * (0.01 * nutritional.weight)
-        ),
+        meal: meal,
+        proteins: Math.floor(nutritional.proteins * (0.01 * nutritional.weight)),
         fats: Math.floor(nutritional.fats * (0.01 * nutritional.weight)),
         carbs: Math.floor(nutritional.carbs * (0.01 * nutritional.weight)),
-        calories: Math.floor(
-          nutritional.calories * (0.01 * nutritional.weight)
-        ),
+        calories: Math.floor(nutritional.calories * (0.01 * nutritional.weight)),
       };
 
       const dayEntry = state.product.find((p) => p.date === date);
@@ -71,16 +72,43 @@ export const mealSlice = createSlice({
       } else {
         state.product.push({
           date: date,
+          dailyLimit: state.dailyGoals,
           items: [calculatedProduct],
         });
       }
-      localStorage.setItem("products", JSON.stringify(state.product));
+      
+      // Саму запись в IndexedDB мы перенесем в Middleware (Шаг 3), 
+      // чтобы не забивать редьюсер побочными эффектами!
     },
-    setNutritional: (state, action) => {
+    setNutritional: (state, action: PayloadAction<mealEntry>) => {
       state.nutritional = action.payload;
     },
+    setIsSetting: (state, action: PayloadAction<boolean>) => {
+      state.isSetting = action.payload;
+    },
+    setDailyGoals: (state, action: PayloadAction<dailyGoalsType>) => {
+      state.dailyGoals = action.payload;
+    },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(loadOfflineData.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(loadOfflineData.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        if (action.payload.products) {
+          state.product = action.payload.products;
+        }
+        if (action.payload.dailyGoals) {
+          state.dailyGoals = action.payload.dailyGoals;
+        }
+      })
+      .addCase(loadOfflineData.rejected, (state) => {
+        state.status = 'failed';
+      });
+  }
 });
 
-export const { addNewProduct, setNutritional } = mealSlice.actions;
+export const { addNewProduct, setNutritional, setIsSetting, setDailyGoals } = mealSlice.actions;
 export const mealReduser = mealSlice.reducer;
