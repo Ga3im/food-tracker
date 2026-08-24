@@ -47,7 +47,7 @@ export const History = () => {
       <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
 
       <div className="text-start pt-[20px]">
-        <h2 className="text-xl font-bold text-slate-800 mb-6">
+        <h2 className="text-xl font-bold text-slate-800">
           История за {format(selectedDate, "d MMMM", { locale: ru })}
         </h2>
 
@@ -56,7 +56,7 @@ export const History = () => {
             <p className="text-slate-400">Нет записей за этот день 🥗</p>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-2">
             {displayItems?.map((item, index, array) => {
               const prev = array[index - 1];
               const showHeader = !prev || prev.meal !== item.meal;
@@ -64,7 +64,7 @@ export const History = () => {
               return (
                 <div key={item.id} className="space-y-2">
                   {showHeader && (
-                    <h3 className="text-xs font-black uppercase tracking-widest text-indigo-500 ml-1 mt-4">
+                    <h3 className="text-xs font-black uppercase tracking-widest text-indigo-500 ml-1">
                       {item.meal === "breakfast" && "Завтрак"}
                       {item.meal === "lunch" && "Обед"}
                       {item.meal === "dinner" && "Ужин"}
