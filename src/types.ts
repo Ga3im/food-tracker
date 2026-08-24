@@ -17,6 +17,14 @@ export type productType = {
   items: mealEntry[];
 };
 
+export interface BaseProduct {
+  name: string;
+  calories: number;
+  proteins: number;
+  fats: number;
+  carbs: number;
+}
+
 export type dailyGoalsType = {
   protein: number;
   fat: number;
