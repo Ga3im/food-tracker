@@ -3,7 +3,9 @@ import { format } from "date-fns";
 import { useAppDispatch, useAppSelector } from "../../store";
 import {
   addNewProduct,
+  updateProduct, // Импортируем метод обновления
   initialFormState,
+  setIsEdit,
   setNutritional,
 } from "../../store/mealsSlice";
 import type { mealEntry } from "../../types";
@@ -22,21 +24,20 @@ export const macronutrients: macronutrientsType[] = [
 ];
 
 export const Form = () => {
-  const { nutritional } = useAppSelector((state) => state.meal);
+  const { nutritional, edittingProduct, isEdit } = useAppSelector(
+    (state) => state.meal
+  );
   const dispatch = useAppDispatch();
 
   const [error, setError] = useState<boolean>(false);
-
-  // Новый стейт для чекбокса "Авто-КБЖУ"
   const [isAutoKBJU, setIsAutoKBJU] = useState<boolean>(false);
 
   const selectedDate = new Date();
 
-  // Эффект автоподставления КБЖУ при вводе названия
+  // Автоподставление КБЖУ при вводе названия (только если не в режиме редактирования)
   useEffect(() => {
-    if (!isAutoKBJU) return;
+    if (!isAutoKBJU || isEdit) return;
 
-    // Ищем точное совпадение по названию
     const foundProduct = foodDatabase.find(
       (p) =>
         p.name.toLowerCase().trim() ===
@@ -54,7 +55,6 @@ export const Form = () => {
         })
       );
     } else {
-      // Если продукт стерт или не найден — обнуляем КБЖУ
       dispatch(
         setNutritional({
           ...nutritional,
@@ -65,9 +65,26 @@ export const Form = () => {
         })
       );
     }
-  }, [nutritional.productName, isAutoKBJU, dispatch]);
+  }, [nutritional.productName, isAutoKBJU, isEdit, dispatch]);
 
-  const handleAddProduct = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (isEdit && edittingProduct) {
+      const factor = 100 / (edittingProduct.weight || 1);
+
+      dispatch(
+        setNutritional({
+          ...edittingProduct,
+          // Разворачиваем итоговые БЖУ обратно в формат "на 100 грамм" для инпутов
+          proteins: Number((edittingProduct.proteins * factor).toFixed(1)),
+          fats: Number((edittingProduct.fats * factor).toFixed(1)),
+          carbs: Number((edittingProduct.carbs * factor).toFixed(1)),
+          calories: Math.round(edittingProduct.calories * factor),
+        })
+      );
+    }
+  }, [isEdit, edittingProduct]);
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const dateStr = format(selectedDate, "dd.MM.yy");
@@ -76,17 +93,30 @@ export const Form = () => {
     } else {
       setError(false);
 
-      dispatch(
-        addNewProduct({
-          date: dateStr,
-          meal: nutritional.meal,
-          nutritional: nutritional,
-        })
-      );
+      if (isEdit) {
+        // СОХРАНЯЕМ ИЗМЕНЕНИЯ ПРИ РЕДАКТИРОВАНИИ
+        dispatch(
+          updateProduct({
+            date: dateStr,
+            meal: nutritional.meal,
+            nutritional: nutritional,
+          })
+        );
+        dispatch(setIsEdit(false));
+      } else {
+        // ДОБАВЛЯЕМ НОВЫЙ ПРОДУКТ
+        dispatch(
+          addNewProduct({
+            date: dateStr,
+            meal: nutritional.meal,
+            nutritional: nutritional,
+          })
+        );
+      }
 
       const meal = nutritional.meal;
       dispatch(setNutritional({ ...initialFormState, meal: meal }));
-      setIsAutoKBJU(false); // сбрасываем чекбокс для следующего ввода
+      setIsAutoKBJU(false);
     }
   };
 
@@ -94,28 +124,31 @@ export const Form = () => {
     dispatch(setNutritional({ ...nutritional, [key]: value }));
   };
 
-  // Проверяем, включен ли автомат и нет ли такого продукта в базе
-  const isProductNotFound =
-    isAutoKBJU &&
-    nutritional.productName.trim() !== "" &&
-    !foodDatabase.some(
-      (p) =>
-        p.name.toLowerCase() === nutritional.productName.toLowerCase().trim()
-    );
+  const handleCancelEdit = () => {
+    const meal = nutritional.meal;
+    dispatch(setNutritional({ ...initialFormState, meal: meal }));
+    dispatch(setIsEdit(false));
+    setError(false);
+  };
 
   return (
     <div className="">
       <div className="px-2">
-        <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-          {/* Синий заголовок */}
+        <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden text-start">
+          {/* Динамический синий заголовок */}
           <div className="p-4 bg-indigo-600 text-white">
+            <h2 className="text-lg font-bold">
+              {isEdit ? "Редактирование продукта" : "Добавление продукта"}
+            </h2>
             <p className="text-indigo-100 text-xs mt-0.5">
-              Введите данные или найдите автоматически
+              {isEdit
+                ? "Измените вес или макронутриенты"
+                : "Введите данные или найдите автоматически"}
             </p>
           </div>
 
-          <form onSubmit={handleAddProduct} className="p-6 space-y-5">
-            {/* Название продукта с datalist */}
+          <form onSubmit={handleSubmit} className="p-6 space-y-5">
+            {/* Название продукта */}
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">
                 Название продукта
@@ -126,14 +159,13 @@ export const Form = () => {
                   updateNutritional("productName", e.target.value)
                 }
                 placeholder="Например: Банан"
-                list="pwa-food-suggestions" // Связываем с базой данных продуктов
+                list="pwa-food-suggestions"
                 className={
                   error && nutritional.productName === ""
                     ? "w-full bg-slate-50 border border-red-500 rounded-2xl px-4 py-2 outline-none focus:border-indigo-500 transition-all text-lg font-medium"
                     : "w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2 outline-none focus:border-indigo-500 transition-all text-lg font-medium"
                 }
               />
-              {/* Локальный список автоподсказок */}
               <datalist id="pwa-food-suggestions">
                 {foodDatabase.map((p, idx) => (
                   <option key={idx} value={p.name} />
@@ -141,23 +173,25 @@ export const Form = () => {
               </datalist>
             </div>
 
-            {/* Современный переключатель (Чекбокс Авто-КБЖУ) */}
-            <label className="flex items-center gap-3 cursor-pointer py-2 px-3 bg-slate-50 rounded-2xl border border-slate-100 select-none hover:bg-slate-100/70 transition-all">
-              <input
-                type="checkbox"
-                className="w-5 h-5 accent-indigo-600 rounded-lg cursor-pointer"
-                checked={isAutoKBJU}
-                onChange={(e) => setIsAutoKBJU(e.target.checked)}
-              />
-              <div className="flex flex-col">
-                <span className="text-sm font-bold text-slate-800">
-                  Автоматический режим
-                </span>
-                <span className="text-[11px] text-slate-500">
-                  Заполнить КБЖУ из встроенного справочника
-                </span>
-              </div>
-            </label>
+            {/* Автоматический режим (скрываем при редактировании) */}
+            {!isEdit && (
+              <label className="flex items-center gap-3 cursor-pointer py-2 px-3 bg-slate-50 rounded-2xl border border-slate-100 select-none hover:bg-slate-100/70 transition-all">
+                <input
+                  type="checkbox"
+                  className="w-5 h-5 accent-indigo-600 rounded-lg cursor-pointer"
+                  checked={isAutoKBJU}
+                  onChange={(e) => setIsAutoKBJU(e.target.checked)}
+                />
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold text-slate-800">
+                    Автоматический режим
+                  </span>
+                  <span className="text-[11px] text-slate-500">
+                    Заполнить КБЖУ из встроенного справочника
+                  </span>
+                </div>
+              </label>
+            )}
 
             {/* Масса */}
             <div>
@@ -167,7 +201,9 @@ export const Form = () => {
               <input
                 step="any"
                 value={nutritional.weight || ""}
-                onChange={(e) => updateNutritional("weight", e.target.value)}
+                onChange={(e) =>
+                  updateNutritional("weight", Number(e.target.value))
+                }
                 min={0}
                 type="number"
                 placeholder="100"
@@ -189,13 +225,13 @@ export const Form = () => {
                   <input
                     value={nutritional[mn.nameEN as keyof mealEntry] || ""}
                     onChange={(e) =>
-                      updateNutritional(mn.nameEN, e.target.value)
+                      updateNutritional(mn.nameEN, Number(e.target.value))
                     }
                     step="any"
                     type="number"
                     min={0}
                     placeholder="0"
-                    disabled={isAutoKBJU} // Блокируем ввод при Авто-КБЖУ
+                    disabled={isAutoKBJU}
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-indigo-500 disabled:bg-slate-100 disabled:text-slate-400 disabled:border-slate-200 font-medium transition-colors"
                   />
                 </div>
@@ -207,45 +243,39 @@ export const Form = () => {
               <label className="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">
                 Калорийность за 100 гр
               </label>
-              <div className="relative">
-                <input
-                  value={nutritional.calories === 0 ? "" : nutritional.calories}
-                  onChange={(e) =>
-                    updateNutritional("calories", e.target.value)
-                  }
-                  step="any"
-                  min={0}
-                  type="number"
-                  placeholder="0"
-                  disabled={isAutoKBJU} // Блокируем ввод при Авто-КБЖУ
-                  className="w-full bg-indigo-50/50 border border-indigo-100 rounded-2xl px-4 py-3 outline-none focus:border-indigo-500 text-2xl font-bold text-indigo-600 disabled:bg-slate-100 disabled:text-slate-400 disabled:border-slate-200 transition-colors"
-                />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-indigo-300 font-medium">
-                  kcal
-                </span>
-              </div>
+              <input
+                value={nutritional.calories === 0 ? "" : nutritional.calories}
+                onChange={(e) =>
+                  updateNutritional("calories", Number(e.target.value))
+                }
+                step="any"
+                min={0}
+                type="number"
+                placeholder="0"
+                disabled={isAutoKBJU}
+                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2 outline-none focus:border-indigo-500 disabled:bg-slate-100 disabled:text-slate-400 disabled:border-slate-200 font-medium transition-colors"
+              />
             </div>
 
-            {/* Красивое предупреждение, если продукт не найден в режиме авто */}
-            {isProductNotFound && (
-              <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-700 leading-relaxed">
-                ⚠️ Продукт <strong>"{nutritional.productName}"</strong> не
-                найден в офлайн-базе. Вы можете отключить авто-режим и ввести
-                КБЖУ вручную.
-              </div>
-            )}
+            {/* Кнопки действий */}
+            <div className="pt-2 space-y-2">
+              <button
+                type="submit"
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-2xl shadow-lg shadow-indigo-100 active:scale-[0.99] transition-all text-base"
+              >
+                {isEdit ? "Сохранить изменения" : "Добавить в дневник"}
+              </button>
 
-            {/* Кнопка отправки */}
-            <button
-              type="submit"
-              className={
-                error
-                  ? "w-full bg-slate-900 border-2 border-red-500 text-red-500 py-3 rounded-2xl font-bold text-lg hover:bg-slate-800 transition-all shadow-xl shadow-slate-200"
-                  : "w-full bg-slate-900 text-white py-3 rounded-2xl font-bold text-lg hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 cursor-pointer"
-              }
-            >
-              Добавить в дневник
-            </button>
+              {isEdit && (
+                <button
+                  type="button"
+                  onClick={handleCancelEdit}
+                  className="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 px-4 rounded-2xl transition-all text-sm"
+                >
+                  Отменить редактирование
+                </button>
+              )}
+            </div>
           </form>
         </div>
       </div>

@@ -108,11 +108,11 @@ export const MealEntry = () => {
       {/* Контейнер для анимации сдвига */}
       <div className="transition-transform duration-300">
         {activeTab === "form" && <Form />}
-        {activeTab === "list" && <MealList />}
+        {activeTab === "list" && <MealList setActiveTab={setActiveTab} />}
       </div>
       {activeTab === "both" && (
         <div className="md:grid md:grid-cols-2">
-          <MealList />
+          <MealList setActiveTab={setActiveTab} />
           <Form />
         </div>
       )}
