@@ -18,7 +18,6 @@ export const History = () => {
   const dateKey = format(selectedDate, "dd.MM.yy");
   const dayData = product.find((p) => p.date === dateKey);
 
-  // Считаем сумму, если данные есть
   const totals = dayData?.items.reduce(
     (acc, item) => ({
       calories: acc.calories + item.calories,
@@ -73,22 +72,27 @@ export const History = () => {
                   )}
 
                   <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center active:scale-[0.98] transition-transform">
-                    <div className="flex flex-col">
+                    {/* Левая часть: название и БЖУ (добавлен flex-1 для правильного распределения места) */}
+                    <div className="flex flex-col flex-1 pr-2">
                       <span className="font-bold text-slate-800">
                         {item.productName}
                       </span>
                       <span className="text-[11px] text-slate-400 font-medium">
-                        {item.weight}г • Б: {item.proteins} Ж: {item.fats} У:{" "}
-                        {item.carbs}
+                        {item.weight}г • Б: {item.proteins.toFixed(1)} Ж:{" "}
+                        {item.fats.toFixed(1)} У: {item.carbs.toFixed(1)}
                       </span>
                     </div>
-                    <div className="text-right">
-                      <span className="text-lg font-black text-slate-900 leading-none">
-                        {item.calories}
-                      </span>
-                      <p className="text-[10px] text-slate-400 font-bold uppercase">
-                        ккал
-                      </p>
+
+                    {/* Правая часть */}
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        <span className="text-lg font-black text-slate-900 leading-none">
+                          {item.calories.toFixed(0)}
+                        </span>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase">
+                          ккал
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -105,7 +109,7 @@ export const History = () => {
                 Всего за день
               </p>
               <h3 className="text-3xl font-black">
-                {totals.calories}{" "}
+                {totals.calories.toFixed(0)}{" "}
                 {dayData.dailyLimit && dayData.dailyLimit.cals > 0
                   ? `/ ${dayData.dailyLimit.cals}`
                   : null}
@@ -115,23 +119,6 @@ export const History = () => {
                 </span>
               </h3>
             </div>
-            {/* <div
-              onClick={() => setActiveTab("actions")}
-              className="bg-indigo-600 p-3 rounded-2xl"
-            >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M12 20v-8m0 0V4m0 8h8m-8 0H4" />
-              </svg>
-            </div> */}
           </div>
 
           <div className="grid grid-cols-3 gap-4 border-t border-slate-800 pt-6">
@@ -140,7 +127,7 @@ export const History = () => {
                 Белки
               </p>
               <p className="text-lg font-bold">
-                {totals.proteins}
+                {totals.proteins.toFixed(0)}
                 {dayData.dailyLimit && dayData.dailyLimit.protein > 0
                   ? `/ ${dayData.dailyLimit.protein}`
                   : null}{" "}
@@ -152,7 +139,7 @@ export const History = () => {
                 Жиры
               </p>
               <p className="text-lg font-bold">
-                {totals.fats}{" "}
+                {totals.fats.toFixed(0)}{" "}
                 {dayData.dailyLimit && dayData.dailyLimit.fat > 0
                   ? `/ ${dayData.dailyLimit.fat}`
                   : null}
@@ -164,7 +151,7 @@ export const History = () => {
                 Углеводы
               </p>
               <p className="text-lg font-bold">
-                {totals.carbs}
+                {totals.carbs.toFixed(0)}
                 {dayData.dailyLimit && dayData.dailyLimit.carb > 0
                   ? `/ ${dayData.dailyLimit.carb}`
                   : null}

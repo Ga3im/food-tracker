@@ -30,7 +30,7 @@ export const Hedaer = () => {
   };
 
   return (
-    <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-slate-200">
+    <header className="sticky top-0 z-100 bg-white/80 backdrop-blur-md border-b border-slate-200">
       <div className="mx-auto px-4 h-16 flex items-center justify-between">
         <span
           onClick={handleLogoClick}

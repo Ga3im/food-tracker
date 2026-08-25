@@ -93,9 +93,9 @@ export const foodDatabase: BaseProduct[] = [
 
   // === ЯЙЦА И МОЛОЧНЫЕ ПРОДУКТЫ ===
   { name: "Яйцо куриное (1 шт)", calories: 74, proteins: 6.5, fats: 5.5, carbs: 0.4 },
-  { name: "Яичный белок (1 шт)", calories: 17, proteins: 3.6, fats: 0.0, carbs: 0.3 },
+  { name: "Яичный белок (1 шт)", calories: 17, proteins: 11.1, fats: 0.2, carbs: 0.7 },
   { name: "Творог 5%", calories: 121, proteins: 17.2, fats: 5.0, carbs: 1.8 },
-  { name: "Творог обезжиренный 0%", calories: 71, proteins: 16.5, fats: 0.2, carbs: 1.3 },
+  { name: "Творог 0%", calories: 71, proteins: 16.5, fats: 0.2, carbs: 1.3 },
   { name: "Молоко 2.5%", calories: 54, proteins: 2.9, fats: 2.5, carbs: 4.8 },
   { name: "Кефир 1%", calories: 40, proteins: 2.8, fats: 1.0, carbs: 4.0 },
   { name: "Йогурт натуральный 2%", calories: 60, proteins: 4.5, fats: 2.0, carbs: 3.5 },
@@ -117,6 +117,7 @@ export const foodDatabase: BaseProduct[] = [
   { name: "Брокколи свежая", calories: 34, proteins: 2.8, fats: 0.4, carbs: 6.7 },
   { name: "Морковь свежая", calories: 41, proteins: 1.3, fats: 0.1, carbs: 6.9 },
   { name: "Лук репчатый", calories: 41, proteins: 1.4, fats: 0.0, carbs: 10.4 },
+  { name: "Красный лук", calories: 42, proteins: 1.1, fats: 0.2, carbs: 8.5 },
   { name: "Чеснок", calories: 149, proteins: 6.5, fats: 0.5, carbs: 29.9 },
   { name: "Листья салата", calories: 12, proteins: 1.2, fats: 0.3, carbs: 1.3 },
 
@@ -128,6 +129,8 @@ export const foodDatabase: BaseProduct[] = [
   { name: "Авокадо", calories: 160, proteins: 2.0, fats: 14.7, carbs: 1.8 },
   { name: "Клубника", calories: 32, proteins: 0.8, fats: 0.4, carbs: 7.5 },
   { name: "Черника / Голубика", calories: 44, proteins: 1.0, fats: 0.5, carbs: 11.0 },
+  { name: "Арбуз", calories: 30, proteins: 0.7, fats: 0.1, carbs: 6 },
+
 
   // === ОРЕХИ, СЕМЕНА И МАСЛА ===
   { name: "Орехи грецкие", calories: 654, proteins: 15.2, fats: 65.2, carbs: 7.0 },
