@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { useIsDesktop } from "../../hooks/useIsDesktop";
 import { setEdittingProduct, setIsEdit } from "../../store/mealsSlice";
+import type { mealEntry } from "../../types";
 
 type mealListProp = {
   setActiveTab: Dispatch<SetStateAction<"form" | "list" | "both">>;
@@ -36,8 +37,7 @@ export const MealList = ({ setActiveTab }: mealListProp) => {
     );
   }, [filteredItems]);
 
-  const handleEdit = (item) => {
-    console.log(item);
+  const handleEdit = (item: mealEntry) => {
     if (!isDesktop) {
       setActiveTab("form");
     }
