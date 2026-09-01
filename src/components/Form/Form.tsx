@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { useAppDispatch, useAppSelector } from "../../store";
 import {
-  addNewProduct,
-  updateProduct, // Импортируем метод обновления
+  addProduct,
+  updateProduct,
   initialFormState,
   setIsEdit,
   setNutritional,
+  setIsDirectInput,
 } from "../../store/mealsSlice";
-import type { mealEntry } from "../../types";
 import { foodDatabase } from "../../data";
 
 type macronutrientsType = {
@@ -24,9 +24,8 @@ export const macronutrients: macronutrientsType[] = [
 ];
 
 export const Form = () => {
-  const { nutritional, edittingProduct, isEdit } = useAppSelector(
-    (state) => state.meal
-  );
+  const { nutritional, edittingProduct, isEdit, isDirectInput } =
+    useAppSelector((state) => state.meal);
   const dispatch = useAppDispatch();
 
   const [error, setError] = useState<boolean>(false);
@@ -34,7 +33,6 @@ export const Form = () => {
 
   const selectedDate = new Date();
 
-  // Автоподставление КБЖУ при вводе названия (только если не в режиме редактирования)
   useEffect(() => {
     if (!isAutoKBJU || isEdit) return;
 
@@ -106,7 +104,7 @@ export const Form = () => {
       } else {
         // ДОБАВЛЯЕМ НОВЫЙ ПРОДУКТ
         dispatch(
-          addNewProduct({
+          addProduct({
             date: dateStr,
             meal: nutritional.meal,
             nutritional: nutritional,
@@ -120,8 +118,12 @@ export const Form = () => {
     }
   };
 
-  const updateNutritional = (key: string, value: string | number) => {
-    dispatch(setNutritional({ ...nutritional, [key]: value }));
+  const updateNutritional = (
+    key: keyof typeof nutritional,
+    value: string | number
+  ) => {
+    const newValue = key === "productName" ? value : Number(value);
+    dispatch(setNutritional({ ...nutritional, [key]: newValue }));
   };
 
   const handleCancelEdit = () => {
@@ -132,40 +134,49 @@ export const Form = () => {
   };
 
   return (
-    <div className="">
+    <div className="w-full">
       <div className="px-2">
         <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden text-start">
-          {/* Динамический синий заголовок */}
-          <div className="p-4 bg-indigo-600 text-white">
-            <h2 className="text-lg font-bold">
-              {isEdit ? "Редактирование продукта" : "Добавление продукта"}
+          <div className="p-3.5 bg-indigo-600 text-white flex justify-between items-center">
+            <h2 className="text-sm font-bold tracking-wide uppercase">
+              {isEdit ? "Редактирование" : "Добавление продукта"}
             </h2>
-            <p className="text-indigo-100 text-xs mt-0.5">
-              {isEdit
-                ? "Измените вес или макронутриенты"
-                : "Введите данные или найдите автоматически"}
-            </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="p-6 space-y-5">
-            {/* Название продукта */}
+          <form onSubmit={handleSubmit} className="p-4 space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-1 ml-1">
                 Название продукта
               </label>
-              <input
-                value={nutritional.productName || ""}
-                onChange={(e) =>
-                  updateNutritional("productName", e.target.value)
-                }
-                placeholder="Например: Банан"
-                list="pwa-food-suggestions"
-                className={
-                  error && nutritional.productName === ""
-                    ? "w-full bg-slate-50 border border-red-500 rounded-2xl px-4 py-2 outline-none focus:border-indigo-500 transition-all text-lg font-medium"
-                    : "w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2 outline-none focus:border-indigo-500 transition-all text-lg font-medium"
-                }
-              />
+              <div className="relative w-full group">
+                <input
+                  value={String(nutritional.productName || "")}
+                  onChange={(e) =>
+                    updateNutritional("productName", e.target.value)
+                  }
+                  placeholder="Например: Банан"
+                  list="pwa-food-suggestions"
+                  className={`w-full bg-slate-50 border rounded-xl pl-3 pr-16 py-2 outline-none focus:border-indigo-500 transition-all text-sm font-medium ${
+                    error && nutritional.productName === ""
+                      ? "border-red-500"
+                      : "border-slate-200"
+                  }`}
+                />
+
+                {!isEdit && (
+                  <button
+                    type="button"
+                    onClick={() => setIsAutoKBJU(!isAutoKBJU)}
+                    className={`absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-lg transition-all ${
+                      isAutoKBJU
+                        ? "bg-indigo-600 text-white shadow-sm"
+                        : "bg-slate-200 text-slate-600 hover:bg-slate-300"
+                    }`}
+                  >
+                    Авто
+                  </button>
+                )}
+              </div>
               <datalist id="pwa-food-suggestions">
                 {foodDatabase.map((p, idx) => (
                   <option key={idx} value={p.name} />
@@ -173,95 +184,105 @@ export const Form = () => {
               </datalist>
             </div>
 
-            {/* Автоматический режим (скрываем при редактировании) */}
-            {!isEdit && (
-              <label className="flex items-center gap-3 cursor-pointer py-2 px-3 bg-slate-50 rounded-2xl border border-slate-100 select-none hover:bg-slate-100/70 transition-all">
-                <input
-                  type="checkbox"
-                  className="w-5 h-5 accent-indigo-600 rounded-lg cursor-pointer"
-                  checked={isAutoKBJU}
-                  onChange={(e) => setIsAutoKBJU(e.target.checked)}
-                />
-                <div className="flex flex-col">
-                  <span className="text-sm font-bold text-slate-800">
-                    Автоматический режим
-                  </span>
-                  <span className="text-[11px] text-slate-500">
-                    Заполнить КБЖУ из встроенного справочника
-                  </span>
-                </div>
-              </label>
-            )}
+            {/* Чекбокс режима ввода без учета на 100г */}
+            <label className="flex items-center gap-2 cursor-pointer p-2 bg-slate-50 rounded-xl border border-slate-100 select-none hover:bg-slate-100/70 transition-all text-xs">
+              <input
+                type="checkbox"
+                className="w-4 h-4 accent-indigo-600 rounded cursor-pointer"
+                checked={isDirectInput}
+                onChange={() => dispatch(setIsDirectInput(!isDirectInput))}
+              />
+              <span className="font-bold text-slate-700 truncate">
+                Ввод без учета на 100гр
+              </span>
+            </label>
 
             {/* Масса */}
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-1 ml-1">
                 Масса (г)
               </label>
               <input
                 step="any"
                 value={nutritional.weight || ""}
-                onChange={(e) =>
-                  updateNutritional("weight", Number(e.target.value))
-                }
+                onChange={(e) => updateNutritional("weight", e.target.value)}
                 min={0}
                 type="number"
                 placeholder="100"
-                className={
+                className={`w-full bg-slate-50 border rounded-xl px-3 py-2 outline-none focus:border-indigo-500 transition-all text-sm font-medium ${
                   error && nutritional.weight <= 0
-                    ? "w-full bg-slate-50 border border-red-500 rounded-2xl px-4 py-2 outline-none focus:border-indigo-500 transition-all text-lg font-medium"
-                    : "w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2 outline-none focus:border-indigo-500 transition-all text-lg font-medium"
-                }
+                    ? "border-red-500"
+                    : "border-slate-200"
+                }`}
               />
             </div>
 
-            {/* Макронутриенты */}
-            <div className="grid grid-cols-3 gap-3">
-              {macronutrients.map((mn) => (
-                <div key={mn.id}>
-                  <label className="block text-[11px] font-bold text-slate-400 uppercase mb-1 ml-1 truncate">
-                    {mn.name} / 100г
-                  </label>
-                  <input
-                    value={nutritional[mn.nameEN as keyof mealEntry] || ""}
-                    onChange={(e) =>
-                      updateNutritional(mn.nameEN, Number(e.target.value))
-                    }
-                    step="any"
-                    type="number"
-                    min={0}
-                    placeholder="0"
-                    disabled={isAutoKBJU}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-indigo-500 disabled:bg-slate-100 disabled:text-slate-400 disabled:border-slate-200 font-medium transition-colors"
-                  />
-                </div>
-              ))}
-            </div>
-
-            {/* Калорийность */}
+            {/* Компактный блок КБЖУ в один ряд (4 колонки) */}
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">
-                Калорийность за 100 гр
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5 ml-1">
+                {isDirectInput ? "Итоговые КБЖУ за весь вес" : "КБЖУ за 100 гр"}
               </label>
-              <input
-                value={nutritional.calories === 0 ? "" : nutritional.calories}
-                onChange={(e) =>
-                  updateNutritional("calories", Number(e.target.value))
-                }
-                step="any"
-                min={0}
-                type="number"
-                placeholder="0"
-                disabled={isAutoKBJU}
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2 outline-none focus:border-indigo-500 disabled:bg-slate-100 disabled:text-slate-400 disabled:border-slate-200 font-medium transition-colors"
-              />
+
+              <div className="grid grid-cols-4 gap-1.5">
+                {macronutrients.map((mn) => (
+                  <div key={mn.id} className="flex flex-col">
+                    <input
+                      value={
+                        nutritional[mn.nameEN as keyof macronutrientsType] || ""
+                      }
+                      onChange={(e) =>
+                        updateNutritional(mn.nameEN, e.target.value)
+                      }
+                      step="any"
+                      type="number"
+                      min={0}
+                      placeholder={mn.name}
+                      disabled={isAutoKBJU}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-center outline-none focus:border-indigo-500 disabled:bg-slate-100 disabled:text-slate-400 text-xs font-bold transition-colors"
+                    />
+                    <span className="text-[9px] text-center text-slate-400 font-bold mt-0.5">
+                      {mn.name}
+                    </span>
+                  </div>
+                ))}
+
+                {/* Калории в конце того же ряда */}
+                <div className="flex flex-col">
+                  <input
+                    value={
+                      nutritional.calories === undefined ||
+                      nutritional.calories === null ||
+                      nutritional.calories === 0
+                        ? ""
+                        : nutritional.calories
+                    }
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === "") {
+                        updateNutritional("calories", "");
+                        return;
+                      }
+                      updateNutritional("calories", Number(val));
+                    }}
+                    step="any"
+                    min={0}
+                    type="number"
+                    placeholder="Ккал"
+                    disabled={isAutoKBJU}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-1 py-1.5 text-center outline-none focus:border-indigo-500 disabled:bg-slate-100 disabled:text-slate-400 text-xs font-bold transition-colors"
+                  />
+                  <span className="text-[9px] text-center text-indigo-600 font-bold mt-0.5">
+                    Ккал
+                  </span>
+                </div>
+              </div>
             </div>
 
             {/* Кнопки действий */}
-            <div className="pt-2 space-y-2">
+            <div className="pt-1 space-y-2">
               <button
                 type="submit"
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-2xl shadow-lg shadow-indigo-100 active:scale-[0.99] transition-all text-base"
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-4 rounded-xl shadow-md active:scale-[0.99] transition-all text-sm"
               >
                 {isEdit ? "Сохранить изменения" : "Добавить в дневник"}
               </button>
@@ -270,7 +291,7 @@ export const Form = () => {
                 <button
                   type="button"
                   onClick={handleCancelEdit}
-                  className="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 px-4 rounded-2xl transition-all text-sm"
+                  className="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl transition-all text-xs"
                 >
                   Отменить редактирование
                 </button>

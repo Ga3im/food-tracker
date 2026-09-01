@@ -5,32 +5,34 @@ import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
   plugins: [
-    react(), 
+    react(),
     tailwindcss(),
     VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'robots.txt'],
+      registerType: "autoUpdate",
+      includeAssets: ["favicon.ico", "apple-touch-icon.png", "robots.txt"],
       manifest: {
-        name: 'Трекер Питания',
-        short_name: 'Питание',
-        description: 'Офлайн трекер калорий и БЖУ',
-        theme_color: '#000000', // укажите ваш основной цвет
+        name: "Food Tracker",
+        short_name: "Food Tracker",
+        description: "Офлайн трекер калорий и БЖУ",
+        theme_color: "#000000", // укажите ваш основной цвет
         icons: [
           {
-            src: 'pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png'
+            src: "adnroidIcon.svg",
+            sizes: "192x192 512x512", // Браузер сам масштабирует SVG под нужный размер
+            type: "image/svg+xml",
+            purpose: "any",
           },
           {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          }
-        ]
+            src: "adnroidIcon.svg",
+            sizes: "192x192 512x512",
+            type: "image/svg+xml",
+            purpose: "maskable", // Позволит Android красиво скруглять иконку
+          },
+        ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,ico}']
-      }
-    })
+        globPatterns: ["**/*.{js,css,html,svg,png,ico}"],
+      },
+    }),
   ],
 });

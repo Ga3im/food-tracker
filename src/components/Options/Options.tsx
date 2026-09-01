@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useIsDesktop } from "../../hooks/useIsDesktop";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { setNutritional } from "../../store/mealsSlice";
@@ -8,18 +9,20 @@ export const Options = () => {
   const dispatch = useAppDispatch();
   const meals: mealType[] = ["breakfast", "lunch", "dinner"];
   const { isDesktop } = useIsDesktop();
+  const navigate = useNavigate();
 
   const handleMealClick = (meal: mealType) => {
+    navigate(`/meal/${meal}`);
     dispatch(setNutritional({ ...nutritional, meal: meal }));
   };
 
   const handleAddSnack = () => {
+    navigate(`/meal/snack`);
     dispatch(setNutritional({ ...nutritional, meal: "snack" }));
   };
 
   return (
     <div className="px-2">
-      {/* Список карточек */}
       <div className="grid gap-3 pb-[20px]">
         <h2 className="px-2">Добавить прием пищи</h2>
         {meals.map((meal) => (
@@ -48,7 +51,6 @@ export const Options = () => {
           </div>
         )}
       </div>
-      {/* Кнопка добавления внизу */}
       <div className="fixed bottom-6 left-0 right-0 px-4 md:hidden">
         <button
           onClick={handleAddSnack}

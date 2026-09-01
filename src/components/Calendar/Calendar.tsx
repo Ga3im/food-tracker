@@ -26,7 +26,7 @@ export const Calendar = ({
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   const { product } = useAppSelector((state) => state.meal);
-  // Логика генерации дней
+
   const firstDayOfMonth = startOfMonth(currentMonth);
   const lastDayOfMonth = endOfMonth(currentMonth);
   const startDate = startOfWeek(firstDayOfMonth, { weekStartsOn: 1 });
@@ -49,12 +49,10 @@ export const Calendar = ({
 
     const [dayStr, monthStr, yearShort] = parts;
 
-    // Сравниваем месяц и год текущего календаря с датой из данных
     const currentMonthStr = format(currentMonth, "MM");
     const currentYearStr = format(currentMonth, "yy");
 
     if (monthStr === currentMonthStr && yearShort === currentYearStr) {
-      // Добавляем день в формате "05", "10" и т.д.
       daysWithData.add(dayStr.padStart(2, "0"));
     }
   });

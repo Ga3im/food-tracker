@@ -15,10 +15,10 @@ import { db } from "../db";
 type MealStateType = {
   nutritional: mealEntry;
   product: productType[];
-  isSetting: boolean;
   dailyGoals: dailyGoalsType;
-  edittingProduct: mealEntry | null; // Сделали nullable
+  edittingProduct: mealEntry | null;
   isEdit: boolean;
+  isDirectInput: boolean;
   status: "idle" | "loading" | "succeeded" | "failed";
 };
 
@@ -36,10 +36,10 @@ export const initialFormState = {
 const initialState: MealStateType = {
   nutritional: initialFormState,
   product: products,
-  isSetting: false,
   dailyGoals: { protein: 0, fat: 0, carb: 0, cals: 0 },
   edittingProduct: null,
   isEdit: false,
+  isDirectInput: false,
   status: "idle",
 };
 
@@ -60,7 +60,7 @@ export const mealSlice = createSlice({
   name: "meal",
   initialState,
   reducers: {
-    addNewProduct: (
+    addProduct: (
       state,
       action: PayloadAction<{
         date: string;
@@ -73,10 +73,22 @@ export const mealSlice = createSlice({
       const calculatedProduct = {
         ...nutritional,
         meal: meal,
-        proteins: Number((nutritional.proteins * (0.01 * nutritional.weight)).toFixed(1)),
-        fats: Number((nutritional.fats * (0.01 * nutritional.weight)).toFixed(1)),
-        carbs: Number((nutritional.carbs * (0.01 * nutritional.weight)).toFixed(1)),
-        calories: Math.round(nutritional.calories * (0.01 * nutritional.weight)),
+        proteins: state.isDirectInput
+          ? nutritional.proteins
+          : Number(
+              (nutritional.proteins * (0.01 * nutritional.weight)).toFixed(1)
+            ),
+        fats: state.isDirectInput
+          ? nutritional.fats
+          : Number((nutritional.fats * (0.01 * nutritional.weight)).toFixed(1)),
+        carbs: state.isDirectInput
+          ? nutritional.carbs
+          : Number(
+              (nutritional.carbs * (0.01 * nutritional.weight)).toFixed(1)
+            ),
+        calories: state.isDirectInput
+          ? nutritional.calories
+          : Math.round(nutritional.calories * (0.01 * nutritional.weight)),
       };
 
       const dayEntry = state.product.find((p) => p.date === date);
@@ -91,7 +103,6 @@ export const mealSlice = createSlice({
         });
       }
     },
-    // ФУНКЦИЯ РЕДАКТИРОВАНИЯ ВНУТРИ ОСНОВНОГО МАССИВА
     updateProduct: (
       state,
       action: PayloadAction<{
@@ -105,26 +116,40 @@ export const mealSlice = createSlice({
       const calculatedProduct = {
         ...nutritional,
         meal: meal,
-        proteins: Number((nutritional.proteins * (0.01 * nutritional.weight)).toFixed(1)),
-        fats: Number((nutritional.fats * (0.01 * nutritional.weight)).toFixed(1)),
-        carbs: Number((nutritional.carbs * (0.01 * nutritional.weight)).toFixed(1)),
-        calories: Math.round(nutritional.calories * (0.01 * nutritional.weight)),
+        proteins: state.isDirectInput
+          ? nutritional.proteins
+          : Number(
+              (nutritional.proteins * (0.01 * nutritional.weight)).toFixed(1)
+            ),
+        fats: state.isDirectInput
+          ? nutritional.fats
+          : Number((nutritional.fats * (0.01 * nutritional.weight)).toFixed(1)),
+        carbs: state.isDirectInput
+          ? nutritional.carbs
+          : Number(
+              (nutritional.carbs * (0.01 * nutritional.weight)).toFixed(1)
+            ),
+        calories: state.isDirectInput
+          ? nutritional.calories
+          : Math.round(nutritional.calories * (0.01 * nutritional.weight)),
       };
 
       const dayEntry = state.product.find((p) => p.date === date);
 
       if (dayEntry) {
-        const itemIndex = dayEntry.items.findIndex((item) => item.id === nutritional.id);
+        const itemIndex = dayEntry.items.findIndex(
+          (item) => item.id === nutritional.id
+        );
         if (itemIndex !== -1) {
           dayEntry.items[itemIndex] = calculatedProduct;
         }
       }
     },
+    deleteProduct: ()=>{
+
+    },
     setNutritional: (state, action: PayloadAction<mealEntry>) => {
       state.nutritional = action.payload;
-    },
-    setIsSetting: (state, action: PayloadAction<boolean>) => {
-      state.isSetting = action.payload;
     },
     setDailyGoals: (state, action: PayloadAction<dailyGoalsType>) => {
       state.dailyGoals = action.payload;
@@ -134,6 +159,9 @@ export const mealSlice = createSlice({
     },
     setIsEdit: (state, action: PayloadAction<boolean>) => {
       state.isEdit = action.payload;
+    },
+    setIsDirectInput: (state, action: PayloadAction<boolean>) => {
+      state.isDirectInput = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -157,12 +185,12 @@ export const mealSlice = createSlice({
 });
 
 export const {
-  addNewProduct,
-  updateProduct, // Экспортируем новый метод
+  addProduct,
+  updateProduct,
   setNutritional,
-  setIsSetting,
   setDailyGoals,
   setEdittingProduct,
   setIsEdit,
+  setIsDirectInput,
 } = mealSlice.actions;
 export const mealReduser = mealSlice.reducer;
