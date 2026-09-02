@@ -42,7 +42,7 @@ export const Header = () => {
   }, [lastScrollY]);
 
   const handleLogoClick = () => {
-    window.location.reload();
+    navigate(routes.main);
   };
 
   const handleSettingClick = () => {

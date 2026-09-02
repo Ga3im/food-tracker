@@ -1,12 +1,11 @@
 import { format } from "date-fns";
 import { Calendar } from "../Calendar/Calendar";
-import { useState, useMemo, Fragment } from "react";
+import { useMemo, Fragment } from "react";
 import { ru } from "date-fns/locale";
 import { useAppSelector } from "../../store";
 
 export const History = () => {
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const { product } = useAppSelector((state) => state.meal);
+  const { product, selectedDate } = useAppSelector((state) => state.meal);
 
   const mealOrder = {
     breakfast: 0,
@@ -52,7 +51,7 @@ export const History = () => {
 
   return (
     <div className="w-full max-w-4xl mx-auto px-2 font-sans">
-      <Calendar selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+      <Calendar />
 
       <div className="text-start pt-[20px]">
         <h2 className="text-xl font-bold text-slate-800 mb-4">

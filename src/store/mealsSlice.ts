@@ -8,9 +8,12 @@ import type {
   mealType,
   productType,
   dailyGoalsType,
+  deleteProductType,
 } from "../types";
 import { products } from "../data";
 import { db } from "../db";
+import { format } from "date-fns";
+import { deleteProductOffline } from ".";
 
 type MealStateType = {
   nutritional: mealEntry;
@@ -20,6 +23,8 @@ type MealStateType = {
   isEdit: boolean;
   isDirectInput: boolean;
   status: "idle" | "loading" | "succeeded" | "failed";
+  selectedDate: null | Date;
+  copiedProduct: mealEntry | null;
 };
 
 export const initialFormState = {
@@ -41,6 +46,8 @@ const initialState: MealStateType = {
   isEdit: false,
   isDirectInput: false,
   status: "idle",
+  selectedDate: new Date(),
+  copiedProduct: null,
 };
 
 export const loadOfflineData = createAsyncThunk(
@@ -69,10 +76,11 @@ export const mealSlice = createSlice({
       }>
     ) => {
       const { date, nutritional, meal } = action.payload;
-
+      const newId = crypto.randomUUID();
       const calculatedProduct = {
         ...nutritional,
         meal: meal,
+        id: newId,
         proteins: state.isDirectInput
           ? nutritional.proteins
           : Number(
@@ -145,9 +153,41 @@ export const mealSlice = createSlice({
         }
       }
     },
-    deleteProduct: ()=>{
-
+    copyProduct: (state, action: PayloadAction<mealEntry | null>) => {
+      state.copiedProduct = action.payload;
     },
+
+    pasteProduct: (state, action: PayloadAction<mealType>) => {
+      const meal = action.payload;
+      if (state.copiedProduct) {
+        if (state.copiedProduct) {
+          state.nutritional = { ...state.copiedProduct };
+        } else {
+          state.nutritional = {
+            meal: meal,
+            id: crypto.randomUUID(),
+            productName: state.copiedProduct.productName,
+            weight: state.copiedProduct.weight,
+            proteins: state.copiedProduct.proteins || 0,
+            fats: state.copiedProduct.fats || 0,
+            carbs: state.copiedProduct.carbs || 0,
+            calories: state.copiedProduct.calories || 0,
+          };
+        }
+      }
+      state.copiedProduct = null;
+    },
+    deleteProduct: (state, action: PayloadAction<deleteProductType>) => {
+      const { selectedDate, item } = action.payload;
+      const date = format(selectedDate, "dd.MM.yy");
+
+      state.product.forEach((p) => {
+        if (p.date === date) {
+          p.items = p.items.filter((i) => i.id !== item.id);
+        }
+      });
+    },
+
     setNutritional: (state, action: PayloadAction<mealEntry>) => {
       state.nutritional = action.payload;
     },
@@ -162,6 +202,9 @@ export const mealSlice = createSlice({
     },
     setIsDirectInput: (state, action: PayloadAction<boolean>) => {
       state.isDirectInput = action.payload;
+    },
+    setSelectedDate: (state, action: PayloadAction<null | Date>) => {
+      state.selectedDate = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -180,6 +223,9 @@ export const mealSlice = createSlice({
       })
       .addCase(loadOfflineData.rejected, (state) => {
         state.status = "failed";
+      })
+      .addCase(deleteProductOffline.fulfilled, (state, action) => {
+        state.product = action.payload;
       });
   },
 });
@@ -187,10 +233,14 @@ export const mealSlice = createSlice({
 export const {
   addProduct,
   updateProduct,
+  copyProduct,
+  pasteProduct,
+  deleteProduct,
   setNutritional,
   setDailyGoals,
   setEdittingProduct,
   setIsEdit,
   setIsDirectInput,
+  setSelectedDate,
 } = mealSlice.actions;
 export const mealReduser = mealSlice.reducer;

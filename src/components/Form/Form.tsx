@@ -8,6 +8,7 @@ import {
   setIsEdit,
   setNutritional,
   setIsDirectInput,
+  pasteProduct,
 } from "../../store/mealsSlice";
 import { foodDatabase } from "../../data";
 
@@ -24,7 +25,7 @@ export const macronutrients: macronutrientsType[] = [
 ];
 
 export const Form = () => {
-  const { nutritional, edittingProduct, isEdit, isDirectInput } =
+  const { nutritional, edittingProduct, isEdit, isDirectInput, copiedProduct } =
     useAppSelector((state) => state.meal);
   const dispatch = useAppDispatch();
 
@@ -119,11 +120,15 @@ export const Form = () => {
   };
 
   const updateNutritional = (
-    key: keyof typeof nutritional,
+    key: keyof typeof nutritional | string,
     value: string | number
   ) => {
     const newValue = key === "productName" ? value : Number(value);
     dispatch(setNutritional({ ...nutritional, [key]: newValue }));
+  };
+
+  const handlePaste = () => {
+    dispatch(pasteProduct(nutritional.meal));
   };
 
   const handleCancelEdit = () => {
@@ -279,6 +284,14 @@ export const Form = () => {
             </div>
 
             {/* Кнопки действий */}
+            {copiedProduct && (
+              <button
+                onClick={handlePaste}
+                className="w-full bg-[#666666] hover:bg-[#555555] text-white font-bold py-2.5 px-4 rounded-xl shadow-md active:scale-[0.99] transition-all text-sm"
+              >
+                Вставить
+              </button>
+            )}
             <div className="pt-1 space-y-2">
               <button
                 type="submit"

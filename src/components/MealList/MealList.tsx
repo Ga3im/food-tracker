@@ -1,13 +1,25 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { format } from "date-fns";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { setEdittingProduct, setIsEdit } from "../../store/mealsSlice";
+import {
+  deleteProductOffline,
+  useAppDispatch,
+  useAppSelector,
+} from "../../store";
+import {
+  copyProduct,
+  setEdittingProduct,
+  setIsEdit,
+} from "../../store/mealsSlice";
 import type { mealEntry } from "../../types";
+import { useParams } from "react-router-dom";
 
 export const MealList = () => {
-  const { product, nutritional } = useAppSelector((state) => state.meal);
+  const { product, nutritional, selectedDate } = useAppSelector(
+    (state) => state.meal
+  );
   const dispatch = useAppDispatch();
-  const selectedDate = new Date();
+  const { mealId } = useParams();
+
   const dateKey = format(selectedDate, "dd.MM.yy");
 
   const [contextMenu, setContextMenu] = useState<{
@@ -30,7 +42,7 @@ export const MealList = () => {
 
     window.addEventListener("mousedown", handleClose);
     window.addEventListener("touchstart", handleClose);
-    
+
     return () => {
       window.removeEventListener("mousedown", handleClose);
       window.removeEventListener("touchstart", handleClose);
@@ -38,9 +50,7 @@ export const MealList = () => {
   }, []);
 
   const filteredItems = useMemo(() => {
-    return (
-      dayData?.items.filter((item) => item.meal === nutritional.meal) || []
-    );
+    return dayData?.items.filter((item) => item.meal === mealId) || [];
   }, [dayData, nutritional.meal]);
 
   const totals = useMemo(() => {
@@ -58,19 +68,17 @@ export const MealList = () => {
   }, [filteredItems]);
 
   const handleEdit = (item: mealEntry) => {
-    console.log("Лог: Нажали редактировать", item);
     dispatch(setEdittingProduct(item));
     dispatch(setIsEdit(true));
     setContextMenu(null);
   };
 
   const handleDelete = (item: mealEntry) => {
-    console.log("Лог: Нажали удалить", item);
-    setContextMenu(null);
+    dispatch(deleteProductOffline({ selectedDate, item }));
   };
 
   const handleCopy = (item: mealEntry) => {
-    console.log("Лог: Нажали копировать", item);
+    dispatch(copyProduct(item));
     setContextMenu(null);
   };
 
@@ -85,8 +93,12 @@ export const MealList = () => {
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
 
-    const x = clientX + menuWidth > screenWidth ? screenWidth - menuWidth - 15 : clientX;
-    const y = clientY + menuHeight > screenHeight ? clientY - menuHeight - 5 : clientY;
+    const x =
+      clientX + menuWidth > screenWidth
+        ? screenWidth - menuWidth - 15
+        : clientX;
+    const y =
+      clientY + menuHeight > screenHeight ? clientY - menuHeight - 5 : clientY;
 
     setContextMenu({ x, y, item });
   };
@@ -95,8 +107,6 @@ export const MealList = () => {
   const handleContextMenu = (e: React.MouseEvent, item: mealEntry) => {
     e.preventDefault(); // Полностью блокируем системное меню браузера здесь
     e.stopPropagation(); // Не даем событию всплывать к window
-
-    console.log("Лог: Сработал правый клик по карточке");
 
     isMenuOpening.current = true;
     openMenuAtCoordinates(e.clientX, e.clientY, item);

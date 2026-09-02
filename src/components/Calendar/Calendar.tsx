@@ -1,4 +1,4 @@
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { useState } from "react";
 import {
   format,
   startOfMonth,
@@ -12,20 +12,14 @@ import {
   subMonths,
 } from "date-fns";
 import { ru } from "date-fns/locale";
-import { useAppSelector } from "../../store";
+import { useAppDispatch, useAppSelector } from "../../store";
+import { setSelectedDate } from "../../store/mealsSlice";
 
-type MonthCalendarType = {
-  selectedDate: Date;
-  setSelectedDate: Dispatch<SetStateAction<Date>>;
-};
-
-export const Calendar = ({
-  selectedDate,
-  setSelectedDate,
-}: MonthCalendarType) => {
+export const Calendar = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
-  const { product } = useAppSelector((state) => state.meal);
+  const { product, selectedDate } = useAppSelector((state) => state.meal);
+  const dispatch = useAppDispatch();
 
   const firstDayOfMonth = startOfMonth(currentMonth);
   const lastDayOfMonth = endOfMonth(currentMonth);
@@ -35,7 +29,7 @@ export const Calendar = ({
 
   const weekDays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 
-  const date = new Date(); // или любая другая дата
+  const date = new Date();
 
   const formattedDate = date.toLocaleDateString("ru-RU", {
     day: "numeric",
@@ -59,7 +53,6 @@ export const Calendar = ({
 
   return (
     <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden max-w-md mx-auto">
-      {/* Шапка с переключателем месяцев */}
       <div className="p-4 flex justify-between items-center bg-indigo-600 text-white">
         <button
           onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
@@ -98,9 +91,7 @@ export const Calendar = ({
         </button>
       </div>
 
-      {/* Сетка календаря */}
       <div className="p-4">
-        {/* Дни недели */}
         <div className="grid grid-cols-7 mb-2">
           {weekDays.map((day) => (
             <div
@@ -112,7 +103,6 @@ export const Calendar = ({
           ))}
         </div>
 
-        {/* Числа */}
         <div className="grid grid-cols-7 gap-1">
           {calendarDays.map((day) => {
             const isSelected = isSameDay(day, selectedDate);
@@ -123,7 +113,7 @@ export const Calendar = ({
             return (
               <button
                 key={day.toString()}
-                onClick={() => setSelectedDate(day)}
+                onClick={() => dispatch(setSelectedDate(day))}
                 className={`
                   h-12 w-full rounded-xl flex flex-col items-center justify-center relative transition-all
                   ${!isCurrentMonth ? "text-slate-300" : "text-slate-700"}
