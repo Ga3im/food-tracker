@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Скругленный фон Slate-900 (монолитный цвет без градиентов для 100% совместимости) -->
+  <rect width="512" height="512" rx="112" fill="#0f172a" />
+
+  <!-- Группа элементов по центру -->
+  <g transform="translate(256, 256)">
+    
+    <!-- Внешнее кольцо (Углеводы) — Тонкий синий -->
+    <circle r="140" stroke="#38bdf8" stroke-width="20" stroke-dasharray="880" stroke-dashoffset="220" stroke-linecap="round" fill="none" transform="rotate(-90)" />
+    
+    <!-- Среднее кольцо (Жиры) — Мягкий янтарный -->
+    <circle r="100" stroke="#fbbf24" stroke-width="20" stroke-dasharray="628" stroke-dashoffset="180" stroke-linecap="round" fill="none" transform="rotate(30)" />
+    
+    <!-- Внутреннее кольцо (Белки) — Свежий изумрудный -->
+    <circle r="60" stroke="#34d399" stroke-width="20" stroke-dasharray="376" stroke-dashoffset="90" stroke-linecap="round" fill="none" transform="rotate(145)" />
+    
+    <!-- Центральное ядро (Калории) — Чистый белый -->
+    <circle r="14" fill="#ffffff" />
+    
+  </g>
+</svg>

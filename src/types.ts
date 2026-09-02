@@ -31,3 +31,8 @@ export type dailyGoalsType = {
   carb: number;
   cals: number;
 };
+
+export type deleteProductType = {
+  item: mealEntry;
+  selectedDate: Date | null;
+};

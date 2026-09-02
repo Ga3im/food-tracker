@@ -1,5 +1,6 @@
-import { useAppDispatch, useAppSelector } from "../../store";
-import { setIsSetting } from "../../store/mealsSlice";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { routes } from "../../pages/router";
 
 const SettingsIcon = () => (
   <svg
@@ -17,35 +18,57 @@ const SettingsIcon = () => (
   </svg>
 );
 
-export const Hedaer = () => {
-  const dispatch = useAppDispatch();
-  const { isSetting } = useAppSelector((state) => state.meal);
+export const Header = () => {
+  const navigate = useNavigate();
+
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > lastScrollY && currentScrollY > 64) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
 
   const handleLogoClick = () => {
-    window.location.reload();
+    navigate(routes.main);
   };
 
   const handleSettingClick = () => {
-    dispatch(setIsSetting(!isSetting));
+    navigate(routes.setting);
   };
 
   return (
-    <header className="sticky top-0 z-100 bg-white/80 backdrop-blur-md border-b border-slate-200">
+    <header
+      className={`sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 transition-transform duration-300 ${
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
       <div className="mx-auto px-4 h-16 flex items-center justify-between">
         <span
           onClick={handleLogoClick}
-          className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent"
+          className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent cursor-pointer select-none"
         >
           DailyEat
         </span>
 
         <button
+          onClick={handleSettingClick}
           className="p-2.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-all active:scale-90"
           title="Настройки"
         >
-          <div onClick={handleSettingClick}>
-            <SettingsIcon />
-          </div>
+          <SettingsIcon />
         </button>
       </div>
     </header>

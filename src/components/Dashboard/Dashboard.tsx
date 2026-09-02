@@ -7,9 +7,11 @@ export const Dashboard = () => {
   const [activeTab, setActiveTab] = useState<"actions" | "history" | "both">(
     "actions"
   );
-  const [touchStart, setTouchStart] = useState<{ x: number; y: number } | null>(
-    null
-  );
+  const [touchStart, setTouchStart] = useState<{
+    x: number;
+    y: number;
+    time: number;
+  } | null>(null);
 
   const { isDesktop } = useIsDesktop();
   useEffect(() => {
@@ -25,18 +27,34 @@ export const Dashboard = () => {
       ...touchStart,
       x: e.targetTouches[0].clientX,
       y: e.targetTouches[0].clientY,
+      time: Date.now(),
     });
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (!touchStart) return;
     const touchEndX = e.changedTouches[0].clientX;
     const touchEndY = e.changedTouches[0].clientY;
+    const touchEndTime = Date.now();
+
     const horizontal = touchStart.x - touchEndX;
     const vertical = touchStart.y - touchEndY;
+    const duration = touchEndTime - touchStart.time;
 
-    if (horizontal > 50 && Math.abs(vertical) < Math.abs(horizontal))
+    const minSpeed = 0.5; // 0.5px за 1мс
+    const isFastSwipe =
+      duration < 300 && Math.abs(horizontal) / duration > minSpeed;
+
+    if (
+      isFastSwipe &&
+      horizontal > 50 &&
+      Math.abs(vertical) < Math.abs(horizontal)
+    )
       setActiveTab("history"); // Свайп влево
-    if (horizontal < -50 && Math.abs(vertical) < Math.abs(horizontal))
+    if (
+      isFastSwipe &&
+      horizontal < -50 &&
+      Math.abs(vertical) < Math.abs(horizontal)
+    )
       setActiveTab("actions"); // Свайп вправо
     setTouchStart(null);
   };

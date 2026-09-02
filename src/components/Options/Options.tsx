@@ -1,27 +1,43 @@
+import { useNavigate } from "react-router-dom";
 import { useIsDesktop } from "../../hooks/useIsDesktop";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { setNutritional } from "../../store/mealsSlice";
 import type { mealType } from "../../types";
+import { format } from "date-fns";
+import { ru } from 'date-fns/locale';
 
 export const Options = () => {
-  const { nutritional } = useAppSelector((state) => state.meal);
+  const { nutritional, selectedDate } = useAppSelector((state) => state.meal);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const meals: mealType[] = ["breakfast", "lunch", "dinner"];
+
   const { isDesktop } = useIsDesktop();
 
   const handleMealClick = (meal: mealType) => {
+    navigate(`/meal/${meal}`);
     dispatch(setNutritional({ ...nutritional, meal: meal }));
   };
 
   const handleAddSnack = () => {
+    navigate(`/meal/snack`);
     dispatch(setNutritional({ ...nutritional, meal: "snack" }));
   };
 
+  const isCurrentDay =
+    format(selectedDate, "dd.MM.yy") === format(new Date(), "dd.MM.yy");
+
   return (
     <div className="px-2">
-      {/* Список карточек */}
       <div className="grid gap-3 pb-[20px]">
-        <h2 className="px-2">Добавить прием пищи</h2>
+        <h2 className="px-2">
+          {isCurrentDay
+            ? "Добавить прием пищи"
+            : `Посмотреть данные за ${format(selectedDate, "d MMMM", {
+                locale: ru,
+              })}`}
+        </h2>
         {meals.map((meal) => (
           <div
             onClick={() => handleMealClick(meal)}
@@ -48,7 +64,6 @@ export const Options = () => {
           </div>
         )}
       </div>
-      {/* Кнопка добавления внизу */}
       <div className="fixed bottom-6 left-0 right-0 px-4 md:hidden">
         <button
           onClick={handleAddSnack}
