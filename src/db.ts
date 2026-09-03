@@ -1,17 +1,17 @@
-import Dexie, { type Table } from 'dexie';
-import type { productType, dailyGoalsType } from './types';
+import Dexie, { type Table } from "dexie";
+import type { ProductGroup, DailyGoalsType } from "./types";
 
 class NutritionDatabase extends Dexie {
   // Определяем таблицы в памяти
-  product!: Table<productType, string>; // Ключ — дата (string)
-  dailyGoals!: Table<dailyGoalsType, string>; // Ключ — фиксированная строка 'current'
+  product!: Table<ProductGroup, string>; // Ключ — дата (string)
+  dailyGoals!: Table<DailyGoalsType, string>; // Ключ — фиксированная строка 'current'
 
   constructor() {
-    super('NutritionDatabase');
+    super("NutritionDatabase");
     // Описываем схемы (индексируем только ключи, так как мы берем данные целиком)
     this.version(1).stores({
-      product: 'date',
-      dailyGoals: 'id'
+      product: "date",
+      dailyGoals: "id",
     });
   }
 }

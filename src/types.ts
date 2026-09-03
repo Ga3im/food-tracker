@@ -1,7 +1,7 @@
-export type mealType = "breakfast" | "lunch" | "dinner" | "snack";
+export type MealType = "breakfast" | "lunch" | "dinner" | "snack";
 
-export type mealEntry = {
-  meal: mealType | null;
+export type MealEntry = {
+  meal: MealType;
   id: string;
   productName: string;
   weight: number;
@@ -11,13 +11,13 @@ export type mealEntry = {
   calories: number;
 };
 
-export type productType = {
+export type ProductGroup = {
   date: string;
-  dailyLimit?: dailyGoalsType;
-  items: mealEntry[];
+  dailyLimit?: DailyGoalsType;
+  items: MealEntry[];
 };
 
-export interface BaseProduct {
+export type BaseProduct = {
   name: string;
   calories: number;
   proteins: number;
@@ -25,14 +25,14 @@ export interface BaseProduct {
   carbs: number;
 }
 
-export type dailyGoalsType = {
+export type DailyGoalsType = {
   protein: number;
   fat: number;
   carb: number;
   cals: number;
 };
 
-export type deleteProductType = {
-  item: mealEntry;
-  selectedDate: Date | null;
+export type DeleteProductGroup = {
+  item: MealEntry;
+  selectedDate: Date;
 };

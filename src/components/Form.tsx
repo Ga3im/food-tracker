@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
-import { useAppDispatch, useAppSelector } from "../../store";
+import { useAppDispatch, useAppSelector } from "../store";
 import {
   addProduct,
   updateProduct,
@@ -9,8 +9,10 @@ import {
   setNutritional,
   setIsDirectInput,
   pasteProduct,
-} from "../../store/mealsSlice";
-import { foodDatabase } from "../../data";
+  cancelEdit,
+} from "../store/mealsSlice";
+import { foodDatabase } from "../data";
+import type { MealEntry } from "../types";
 
 type macronutrientsType = {
   id: number;
@@ -133,8 +135,7 @@ export const Form = () => {
 
   const handleCancelEdit = () => {
     const meal = nutritional.meal;
-    dispatch(setNutritional({ ...initialFormState, meal: meal }));
-    dispatch(setIsEdit(false));
+    dispatch(cancelEdit(meal));
     setError(false);
   };
 
@@ -232,9 +233,7 @@ export const Form = () => {
                 {macronutrients.map((mn) => (
                   <div key={mn.id} className="flex flex-col">
                     <input
-                      value={
-                        nutritional[mn.nameEN as keyof macronutrientsType] || ""
-                      }
+                      value={nutritional[mn.nameEN as keyof MealEntry] || ""}
                       onChange={(e) =>
                         updateNutritional(mn.nameEN, e.target.value)
                       }

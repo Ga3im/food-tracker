@@ -12,8 +12,8 @@ import {
   subMonths,
 } from "date-fns";
 import { ru } from "date-fns/locale";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { setSelectedDate } from "../../store/mealsSlice";
+import { useAppDispatch, useAppSelector } from "../store";
+import { setSelectedDate } from "../store/mealsSlice";
 
 export const Calendar = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());

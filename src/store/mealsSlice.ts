@@ -4,11 +4,11 @@ import {
   type PayloadAction,
 } from "@reduxjs/toolkit";
 import type {
-  mealEntry,
-  mealType,
-  productType,
-  dailyGoalsType,
-  deleteProductType,
+  MealEntry,
+  MealType,
+  ProductGroup,
+  DailyGoalsType,
+  DeleteProductGroup,
 } from "../types";
 import { products } from "../data";
 import { db } from "../db";
@@ -16,19 +16,19 @@ import { format } from "date-fns";
 import { deleteProductOffline } from ".";
 
 type MealStateType = {
-  nutritional: mealEntry;
-  product: productType[];
-  dailyGoals: dailyGoalsType;
-  edittingProduct: mealEntry | null;
+  nutritional: MealEntry;
+  product: ProductGroup[];
+  dailyGoals: DailyGoalsType;
+  edittingProduct: MealEntry | null;
   isEdit: boolean;
   isDirectInput: boolean;
   status: "idle" | "loading" | "succeeded" | "failed";
-  selectedDate: null | Date;
-  copiedProduct: mealEntry | null;
+  selectedDate: Date;
+  copiedProduct: MealEntry | null;
 };
 
-export const initialFormState = {
-  meal: null,
+export const initialFormState: MealEntry = {
+  meal: "breakfast",
   id: "",
   productName: "",
   weight: 0,
@@ -71,8 +71,8 @@ export const mealSlice = createSlice({
       state,
       action: PayloadAction<{
         date: string;
-        nutritional: mealEntry;
-        meal: mealType | null;
+        nutritional: MealEntry;
+        meal: MealType;
       }>
     ) => {
       const { date, nutritional, meal } = action.payload;
@@ -115,8 +115,8 @@ export const mealSlice = createSlice({
       state,
       action: PayloadAction<{
         date: string;
-        nutritional: mealEntry;
-        meal: mealType | null;
+        nutritional: MealEntry;
+        meal: MealType;
       }>
     ) => {
       const { date, nutritional, meal } = action.payload;
@@ -153,31 +153,21 @@ export const mealSlice = createSlice({
         }
       }
     },
-    copyProduct: (state, action: PayloadAction<mealEntry | null>) => {
+    copyProduct: (state, action: PayloadAction<MealEntry>) => {
       state.copiedProduct = action.payload;
     },
-
-    pasteProduct: (state, action: PayloadAction<mealType>) => {
+    pasteProduct: (state, action: PayloadAction<MealType>) => {
       const meal = action.payload;
       if (state.copiedProduct) {
-        if (state.copiedProduct) {
-          state.nutritional = { ...state.copiedProduct };
-        } else {
-          state.nutritional = {
-            meal: meal,
-            id: crypto.randomUUID(),
-            productName: state.copiedProduct.productName,
-            weight: state.copiedProduct.weight,
-            proteins: state.copiedProduct.proteins || 0,
-            fats: state.copiedProduct.fats || 0,
-            carbs: state.copiedProduct.carbs || 0,
-            calories: state.copiedProduct.calories || 0,
-          };
-        }
+        state.nutritional = {
+          ...state.copiedProduct,
+          meal: meal,
+          id: crypto.randomUUID(),
+        };
       }
       state.copiedProduct = null;
     },
-    deleteProduct: (state, action: PayloadAction<deleteProductType>) => {
+    deleteProduct: (state, action: PayloadAction<DeleteProductGroup>) => {
       const { selectedDate, item } = action.payload;
       const date = format(selectedDate, "dd.MM.yy");
 
@@ -187,14 +177,17 @@ export const mealSlice = createSlice({
         }
       });
     },
-
-    setNutritional: (state, action: PayloadAction<mealEntry>) => {
+    cancelEdit: (state, action: PayloadAction<MealType>) => {
+      state.nutritional = { ...initialFormState, meal: action.payload };
+      state.isEdit = false;
+    },
+    setNutritional: (state, action: PayloadAction<MealEntry>) => {
       state.nutritional = action.payload;
     },
-    setDailyGoals: (state, action: PayloadAction<dailyGoalsType>) => {
+    setDailyGoals: (state, action: PayloadAction<DailyGoalsType>) => {
       state.dailyGoals = action.payload;
     },
-    setEdittingProduct: (state, action: PayloadAction<mealEntry | null>) => {
+    setEdittingProduct: (state, action: PayloadAction<MealEntry | null>) => {
       state.edittingProduct = action.payload;
     },
     setIsEdit: (state, action: PayloadAction<boolean>) => {
@@ -203,7 +196,7 @@ export const mealSlice = createSlice({
     setIsDirectInput: (state, action: PayloadAction<boolean>) => {
       state.isDirectInput = action.payload;
     },
-    setSelectedDate: (state, action: PayloadAction<null | Date>) => {
+    setSelectedDate: (state, action: PayloadAction<Date>) => {
       state.selectedDate = action.payload;
     },
   },
@@ -236,6 +229,7 @@ export const {
   copyProduct,
   pasteProduct,
   deleteProduct,
+  cancelEdit,
   setNutritional,
   setDailyGoals,
   setEdittingProduct,

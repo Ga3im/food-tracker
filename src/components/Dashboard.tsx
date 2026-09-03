@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { History } from "../History/History";
-import { Options } from "../Options/Options";
-import { useIsDesktop } from "../../hooks/useIsDesktop";
+import { Options } from "./Options";
+import { History } from "./History";
+import { useIsDesktop } from "../hooks/useIsDesktop";
 
 export const Dashboard = () => {
   const [activeTab, setActiveTab] = useState<"actions" | "history" | "both">(

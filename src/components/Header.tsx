@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { routes } from "../../pages/router";
+import { routes } from "../pages/router";
 
 const SettingsIcon = () => (
   <svg

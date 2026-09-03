@@ -10,7 +10,7 @@ import {
   type TypedUseSelectorHook,
 } from "react-redux";
 import { db } from "../db";
-import type { deleteProductType } from "../types";
+import type { DeleteProductGroup } from "../types";
 import { format } from "date-fns";
 
 // Middleware для фонового сохранения данных в IndexedDB
@@ -38,7 +38,7 @@ const offlineStorageMiddleware: Middleware =
 
 export const deleteProductOffline = createAsyncThunk(
   "meal/deleteProductOffline",
-  async (payload: deleteProductType, { getState }) => {
+  async (payload: DeleteProductGroup, { getState }) => {
     const { selectedDate, item } = payload;
     const date = format(selectedDate, "dd.MM.yy");
 
