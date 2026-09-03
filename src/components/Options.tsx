@@ -1,21 +1,21 @@
 import { useNavigate } from "react-router-dom";
-import { useIsDesktop } from "../../hooks/useIsDesktop";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { setNutritional } from "../../store/mealsSlice";
-import type { mealType } from "../../types";
+import { useIsDesktop } from "../hooks/useIsDesktop";
+import { useAppDispatch, useAppSelector } from "../store";
+import { setNutritional } from "../store/mealsSlice";
+import type { MealType } from "../types";
 import { format } from "date-fns";
-import { ru } from 'date-fns/locale';
+import { ru } from "date-fns/locale";
 
 export const Options = () => {
   const { nutritional, selectedDate } = useAppSelector((state) => state.meal);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const meals: mealType[] = ["breakfast", "lunch", "dinner"];
+  const meals: MealType[] = ["breakfast", "lunch", "dinner"];
 
   const { isDesktop } = useIsDesktop();
 
-  const handleMealClick = (meal: mealType) => {
+  const handleMealClick = (meal: MealType) => {
     navigate(`/meal/${meal}`);
     dispatch(setNutritional({ ...nutritional, meal: meal }));
   };

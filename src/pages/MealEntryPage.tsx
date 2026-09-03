@@ -1,18 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../store";
-import { setNutritional } from "../store/mealsSlice";
+import { useAppSelector } from "../store";
 import { BackButton } from "../components/BackButton";
-import { MealList } from "../components/MealList/MealList";
-import { Form } from "../components/Form/Form";
 import { useNavigate, useParams } from "react-router-dom";
 import { format } from "date-fns";
+import { MealList } from "../components/MealList";
+import { Form } from "../components/Form";
 
 export const MealEntryPage = () => {
   const [isFormVisible, setIsFormVisible] = useState(true);
   const formContainerRef = useRef<HTMLDivElement>(null);
-  const { nutritional, selectedDate } = useAppSelector((state) => state.meal);
+  const { selectedDate } = useAppSelector((state) => state.meal);
 
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { mealId } = useParams();
 
@@ -40,7 +38,6 @@ export const MealEntryPage = () => {
 
   const handleBackClick = () => {
     navigate(-1);
-    dispatch(setNutritional({ ...nutritional, meal: null }));
   };
 
   const scrollToForm = () => {

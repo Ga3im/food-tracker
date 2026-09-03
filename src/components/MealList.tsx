@@ -1,16 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { format } from "date-fns";
-import {
-  deleteProductOffline,
-  useAppDispatch,
-  useAppSelector,
-} from "../../store";
+import { deleteProductOffline, useAppDispatch, useAppSelector } from "../store";
 import {
   copyProduct,
   setEdittingProduct,
   setIsEdit,
-} from "../../store/mealsSlice";
-import type { mealEntry } from "../../types";
+} from "../store/mealsSlice";
+import type { MealEntry } from "../types";
 import { useParams } from "react-router-dom";
 
 export const MealList = () => {
@@ -25,7 +21,7 @@ export const MealList = () => {
   const [contextMenu, setContextMenu] = useState<{
     x: number;
     y: number;
-    item: mealEntry;
+    item: MealEntry;
   } | null>(null);
 
   const touchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -67,17 +63,17 @@ export const MealList = () => {
     );
   }, [filteredItems]);
 
-  const handleEdit = (item: mealEntry) => {
+  const handleEdit = (item: MealEntry) => {
     dispatch(setEdittingProduct(item));
     dispatch(setIsEdit(true));
     setContextMenu(null);
   };
 
-  const handleDelete = (item: mealEntry) => {
+  const handleDelete = (item: MealEntry) => {
     dispatch(deleteProductOffline({ selectedDate, item }));
   };
 
-  const handleCopy = (item: mealEntry) => {
+  const handleCopy = (item: MealEntry) => {
     dispatch(copyProduct(item));
     setContextMenu(null);
   };
@@ -86,7 +82,7 @@ export const MealList = () => {
   const openMenuAtCoordinates = (
     clientX: number,
     clientY: number,
-    item: mealEntry
+    item: MealEntry
   ) => {
     const menuWidth = 170;
     const menuHeight = 140;
@@ -104,7 +100,7 @@ export const MealList = () => {
   };
 
   // Обработчик правого клика (Десктоп)
-  const handleContextMenu = (e: React.MouseEvent, item: mealEntry) => {
+  const handleContextMenu = (e: React.MouseEvent, item: MealEntry) => {
     e.preventDefault(); // Полностью блокируем системное меню браузера здесь
     e.stopPropagation(); // Не даем событию всплывать к window
 
@@ -117,7 +113,7 @@ export const MealList = () => {
   };
 
   // Обработчик удержания (Мобильные)
-  const handleTouchStart = (e: React.TouchEvent, item: mealEntry) => {
+  const handleTouchStart = (e: React.TouchEvent, item: MealEntry) => {
     if (e.touches.length > 1) return;
 
     const touch = e.touches[0];

@@ -1,8 +1,8 @@
 import { format } from "date-fns";
-import { Calendar } from "../Calendar/Calendar";
+import { Calendar } from "./Calendar";
 import { useMemo, Fragment } from "react";
 import { ru } from "date-fns/locale";
-import { useAppSelector } from "../../store";
+import { useAppSelector } from "../store";
 
 export const History = () => {
   const { product, selectedDate } = useAppSelector((state) => state.meal);

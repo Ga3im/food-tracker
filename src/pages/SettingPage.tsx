@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../store";
 import { setDailyGoals } from "../store/mealsSlice";
-import { MacroGoalRow } from "../components/MacroGoalRow/MacroGoalRow";
+import { MacroGoalRow } from "../components/MacroGoalRow";
 import { BackButton } from "../components/BackButton";
 import { useNavigate } from "react-router-dom";
 import { routes } from "../pages/router";
