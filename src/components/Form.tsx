@@ -33,6 +33,7 @@ export const Form = () => {
 
   const [error, setError] = useState<boolean>(false);
   const [isAutoKBJU, setIsAutoKBJU] = useState<boolean>(false);
+  const [, ] = useState<MealEntry>();
 
   const selectedDate = new Date();
 

@@ -1,11 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { format } from "date-fns";
 import { deleteProductOffline, useAppDispatch, useAppSelector } from "../store";
-import {
-  copyProduct,
-  setEdittingProduct,
-  setIsEdit,
-} from "../store/mealsSlice";
+import { copyProduct, editProduct } from "../store/mealsSlice";
 import type { MealEntry } from "../types";
 import { useParams } from "react-router-dom";
 
@@ -64,13 +60,13 @@ export const MealList = () => {
   }, [filteredItems]);
 
   const handleEdit = (item: MealEntry) => {
-    dispatch(setEdittingProduct(item));
-    dispatch(setIsEdit(true));
+    dispatch(editProduct(item));
     setContextMenu(null);
   };
 
   const handleDelete = (item: MealEntry) => {
     dispatch(deleteProductOffline({ selectedDate, item }));
+    setContextMenu(null);
   };
 
   const handleCopy = (item: MealEntry) => {
@@ -99,20 +95,14 @@ export const MealList = () => {
     setContextMenu({ x, y, item });
   };
 
-  // Обработчик правого клика (Десктоп)
   const handleContextMenu = (e: React.MouseEvent, item: MealEntry) => {
-    e.preventDefault(); // Полностью блокируем системное меню браузера здесь
-    e.stopPropagation(); // Не даем событию всплывать к window
+    e.preventDefault(); 
+    e.stopPropagation(); 
 
     isMenuOpening.current = true;
     openMenuAtCoordinates(e.clientX, e.clientY, item);
-
-    setTimeout(() => {
-      isMenuOpening.current = false;
-    }, 80);
   };
 
-  // Обработчик удержания (Мобильные)
   const handleTouchStart = (e: React.TouchEvent, item: MealEntry) => {
     if (e.touches.length > 1) return;
 
@@ -122,23 +112,8 @@ export const MealList = () => {
 
     if (touchTimer.current) clearTimeout(touchTimer.current);
 
-    touchTimer.current = setTimeout(() => {
-      if (navigator.vibrate) navigator.vibrate(40);
-
-      isMenuOpening.current = true;
-      openMenuAtCoordinates(travelX, travelY, item);
-
-      setTimeout(() => {
-        isMenuOpening.current = false;
-      }, 100);
-    }, 600);
-  };
-
-  const handleTouchEnd = () => {
-    if (touchTimer.current) {
-      clearTimeout(touchTimer.current);
-      touchTimer.current = null;
-    }
+    isMenuOpening.current = true;
+    openMenuAtCoordinates(travelX, travelY, item);
   };
 
   return (
@@ -157,7 +132,6 @@ export const MealList = () => {
               key={item.id}
               onContextMenu={(e) => handleContextMenu(e, item)}
               onTouchStart={(e) => handleTouchStart(e, item)}
-              onTouchEnd={handleTouchEnd}
               onTouchMove={() => {
                 if (touchTimer.current) {
                   clearTimeout(touchTimer.current);
