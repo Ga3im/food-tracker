@@ -181,6 +181,10 @@ export const mealSlice = createSlice({
       state.nutritional = { ...initialFormState, meal: action.payload };
       state.isEdit = false;
     },
+    editProduct: (state, action: PayloadAction<MealEntry>) => {
+      state.edittingProduct = action.payload;
+      state.isEdit = true;
+    },
     setNutritional: (state, action: PayloadAction<MealEntry>) => {
       state.nutritional = action.payload;
     },
@@ -230,6 +234,7 @@ export const {
   pasteProduct,
   deleteProduct,
   cancelEdit,
+  editProduct,
   setNutritional,
   setDailyGoals,
   setEdittingProduct,

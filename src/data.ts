@@ -137,6 +137,20 @@ export const foodDatabase: BaseProduct[] = [
 
   // === КРУПЫ, МАКАРОНЫ И БОБОВЫЕ (СУХОЙ ПРОДУКТ) ===
   {
+    name: "Булгур (сухой)",
+    calories: 342,
+    proteins: 12.3,
+    fats: 1.3,
+    carbs: 57.6,
+  },
+  {
+    name: "Булгур (отварной на воде)",
+    calories: 83,
+    proteins: 3.1,
+    fats: 0.2,
+    carbs: 14.1,
+  },
+  {
     name: "Гречневая крупа (сухая)",
     calories: 330,
     proteins: 12.6,
