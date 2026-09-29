@@ -9,7 +9,7 @@ import { Form } from "../components/Form";
 export const MealEntryPage = () => {
   const [isFormVisible, setIsFormVisible] = useState(true);
   const formContainerRef = useRef<HTMLDivElement>(null);
-  const { selectedDate } = useAppSelector((state) => state.meal);
+  const { selectedDate, editedProduct } = useAppSelector((state) => state.meal);
 
   const navigate = useNavigate();
   const { mealId } = useParams();
@@ -50,6 +50,8 @@ export const MealEntryPage = () => {
   const isCurrentDay =
     format(selectedDate, "dd.MM.yy") === format(new Date(), "dd.MM.yy");
 
+  const isVisibleForm = isCurrentDay || (!isCurrentDay && editedProduct !== null);
+
   return (
     <div className="relative min-h-screen bg-slate-50 font-sans antialiased pb-10">
       <BackButton onBackClick={handleBackClick} />
@@ -66,7 +68,7 @@ export const MealEntryPage = () => {
           <div className="lg:col-span-7 space-y-4">
             <MealList />
           </div>
-          {isCurrentDay && (
+          {isVisibleForm && (
             <div
               ref={formContainerRef}
               className="lg:col-span-5 lg:sticky lg:top-6 w-full"

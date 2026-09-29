@@ -1,12 +1,12 @@
 import { useEffect } from "react";
-import { useAppSelector, useAppDispatch } from "../store";
-import { loadOfflineData } from "../store/mealsSlice";
+import { useAppSelector, useAppDispatch, loadOfflineData } from "../store";
 import { Route, Routes } from "react-router-dom";
 import { routes } from "../pages/router";
 import { MainPage } from "../pages/MainPage";
 import { SettingPage } from "../pages/SettingPage";
 import { Header } from "./Header";
 import { MealEntryPage } from "../pages/MealEntryPage";
+import { Database } from "../pages/DatabasePage";
 
 export const Main = () => {
   const dispatch = useAppDispatch();
@@ -31,6 +31,7 @@ export const Main = () => {
       <Header />
       <Routes>
         <Route index path={routes.main} element={<MainPage />} />
+        <Route path={routes.database} element={<Database />} />
         <Route path={routes.setting} element={<SettingPage />} />
         <Route path={routes.meal} element={<MealEntryPage />} />
       </Routes>

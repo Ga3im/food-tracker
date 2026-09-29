@@ -14,6 +14,7 @@ export const MainPage = () => {
   } | null>(null);
 
   const { isDesktop } = useIsDesktop();
+  
   useEffect(() => {
     if (isDesktop) {
       setActiveTab("both");

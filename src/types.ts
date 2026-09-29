@@ -1,14 +1,14 @@
-export type MealType = "breakfast" | "lunch" | "dinner" | "snack";
+export type MealType = "breakfast" | "lunch" | "dinner" | "snack" | "";
 
 export type MealEntry = {
   meal: MealType;
   id: string;
   productName: string;
-  weight: number;
-  proteins: number;
-  carbs: number;
-  fats: number;
-  calories: number;
+  weight: number | string;
+  proteins: number | string;
+  carbs: number | string;
+  fats: number | string;
+  calories: number | string;
 };
 
 export type ProductGroup = {
@@ -18,18 +18,19 @@ export type ProductGroup = {
 };
 
 export type BaseProduct = {
+  id: string;
   name: string;
   calories: number;
   proteins: number;
   fats: number;
   carbs: number;
-}
+};
 
 export type DailyGoalsType = {
-  protein: number;
-  fat: number;
-  carb: number;
-  cals: number;
+  proteins: number;
+  fats: number;
+  carbs: number;
+  calories: number;
 };
 
 export type DeleteProductGroup = {
