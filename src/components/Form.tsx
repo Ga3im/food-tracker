@@ -205,7 +205,7 @@ export const Form = () => {
                 {macronutrients.map((mn) => (
                   <div key={mn.id} className="flex flex-col">
                     <input
-                      value={currentProduct[mn.nameEN]}
+                      value={currentProduct[mn.nameEN as keyof MealEntry] ?? ""}
                       onChange={(e) => handleProductChange(mn.nameEN, e.target.value)}
                       step="any"
                       type="text"

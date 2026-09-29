@@ -41,7 +41,9 @@ export const Database = () => {
   };
 
   const handleDelete = () => {
-    dispatch(deleteProductDatabaseOffline(contextMenu.item.id));
+    if (contextMenu) {
+      dispatch(deleteProductDatabaseOffline(contextMenu.item.id));
+    }
     setContextMenu(null);
   };
 

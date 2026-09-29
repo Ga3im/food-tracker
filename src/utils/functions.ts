@@ -1,4 +1,4 @@
-export const filterNumericInput = (val) => {
+export const filterNumericInput = (val: any) => {
   let clean = val.replace(/[^0-9.,]/g, "");
 
   const separators = clean.match(/[.,]/g);

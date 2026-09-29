@@ -106,25 +106,27 @@ export const mealSlice = createSlice({
       state.editedProduct = null;
     },
     copyProduct: (state, action: PayloadAction<MealEntry>) => {
-      const copiedProduct = action.payload;
+      const copiedProduct = action.payload as MealEntry;
       const proteins = (100 * +copiedProduct.proteins) / +copiedProduct.weight;
       const fats = (100 * +copiedProduct.fats) / +copiedProduct.weight;
       const carbs = (100 * +copiedProduct.carbs) / +copiedProduct.weight;
       const calories = (100 * +copiedProduct.calories) / +copiedProduct.weight;
 
-      state.copiedProduct = {
-        ...state.copiedProduct,
-        productName: copiedProduct.productName,
-        weight: copiedProduct.weight,
-        proteins: proteins,
-        fats: fats,
-        carbs: carbs,
-        calories: Math.round(calories),
-      };
+      if (state.copiedProduct) {
+        state.copiedProduct = {
+          ...state.copiedProduct,
+          productName: copiedProduct.productName,
+          weight: copiedProduct.weight,
+          proteins: proteins,
+          fats: fats,
+          carbs: carbs,
+          calories: Math.round(calories),
+        };
+      }
     },
     pasteProduct: (state, action: PayloadAction<MealType>) => {
       const meal = action.payload;
-
+      if (!state.copiedProduct) return;
       state.product = {
         ...state.copiedProduct,
         meal: meal,
@@ -207,17 +209,14 @@ export const mealSlice = createSlice({
         if (!state.databaseProducts) state.databaseProducts = [];
         state.databaseProducts.push(action.payload);
       })
-   .addCase(deleteProductDatabaseOffline.fulfilled, (state, action) => {
-  const deletedProductId = action.payload; // Сюда прилетает ID в виде строки
-  
-  if (state.databaseProducts) {
-    // Явно перезаписываем массив новым отфильтрованным списком
-    state.databaseProducts = state.databaseProducts.filter(
-      (item) => item.id !== deletedProductId
-    );
-  }
-})
+      .addCase(deleteProductDatabaseOffline.fulfilled, (state, action) => {
+        const deletedProductId = action.payload; // Сюда прилетает ID в виде строки
 
+        if (state.databaseProducts) {
+          // Явно перезаписываем массив новым отфильтрованным списком
+          state.databaseProducts = state.databaseProducts.filter((item) => item.id !== deletedProductId);
+        }
+      });
   },
 });
 

@@ -1,9 +1,5 @@
 import React, { useState, type Dispatch, type SetStateAction } from "react";
-import {
-  addProductToDatabaseOffline,
-  useAppDispatch,
-  useAppSelector,
-} from "../store";
+import { addProductToDatabaseOffline, useAppDispatch, useAppSelector } from "../store";
 import { macronutrients } from "./Form";
 import type { BaseProduct } from "../types";
 
@@ -45,7 +41,7 @@ export const DatabaseForm = ({ setIsOpenForm }: DatabaseFormType) => {
 
   const { isDirectInput, databaseProducts } = useAppSelector((state) => state.meal);
   const dispatch = useAppDispatch();
-  console.log(databaseProducts)
+  console.log(databaseProducts);
 
   const handleCloseForm = () => {
     setIsOpenForm(false);
@@ -64,7 +60,7 @@ export const DatabaseForm = ({ setIsOpenForm }: DatabaseFormType) => {
       setIsError(true);
       return;
     }
-  
+
     dispatch(addProductToDatabaseOffline(newProduct));
     setIsError(false);
     setNewProduct({
@@ -86,7 +82,7 @@ export const DatabaseForm = ({ setIsOpenForm }: DatabaseFormType) => {
     setNewProduct((prev) => ({ ...prev, [key]: numericValue }));
   };
 
-  const handleCaloriesChange = (value) => {
+  const handleCaloriesChange = (value: string) => {
     setNewProduct((prev) => ({ ...prev, calories: Number(value) }));
   };
 
@@ -94,9 +90,7 @@ export const DatabaseForm = ({ setIsOpenForm }: DatabaseFormType) => {
     <div className="px-4 fixed bottom-4 left-0 right-0 max-w">
       <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden text-start">
         <div className="p-3.5 bg-indigo-600 text-white flex justify-between items-center">
-          <h2 className="text-sm font-bold tracking-wide uppercase">
-            Добавление продукта в базу данных
-          </h2>
+          <h2 className="text-sm font-bold tracking-wide uppercase">Добавление продукта в базу данных</h2>
           <button onClick={handleCloseForm} className="cursor-pointer">
             <CloseIcon />
           </button>
@@ -104,17 +98,13 @@ export const DatabaseForm = ({ setIsOpenForm }: DatabaseFormType) => {
 
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase mb-1 ml-1">
-              Название продукта
-            </label>
+            <label className="block text-xs font-bold text-slate-500 uppercase mb-1 ml-1">Название продукта</label>
             <input
               value={newProduct.name}
               placeholder="Название"
               onChange={(e) => handleNameChange(e.target.value)}
               className={`w-full bg-slate-50 border rounded-xl px-3 py-2 outline-none focus:border-indigo-500 transition-all text-sm font-medium ${
-                isError && !newProduct.name.trim()
-                  ? "border-red-500"
-                  : "border-slate-200"
+                isError && !newProduct.name.trim() ? "border-red-500" : "border-slate-200"
               }`}
             />
           </div>
@@ -133,23 +123,17 @@ export const DatabaseForm = ({ setIsOpenForm }: DatabaseFormType) => {
                   <div key={mn.id} className="flex flex-col">
                     <input
                       onFocus={(e) => e.target.select()}
-                      onChange={(e) =>
-                        handleNutrientChange(nutrientKey, e.target.value)
-                      }
+                      onChange={(e) => handleNutrientChange(nutrientKey, e.target.value)}
                       value={currentValue === 0 ? "" : currentValue}
                       step="any"
                       type="number"
                       min={0}
                       placeholder={mn.name}
                       className={`w-full bg-slate-50 border rounded-lg px-2 py-1.5 text-center outline-none focus:border-indigo-500 text-xs font-bold transition-colors ${
-                        isError && currentValue <= 0
-                          ? "border-red-500"
-                          : "border-slate-200"
+                        isError && currentValue <= 0 ? "border-red-500" : "border-slate-200"
                       }`}
                     />
-                    <span className="text-[9px] text-center text-slate-400 font-bold mt-0.5">
-                      {mn.name}
-                    </span>
+                    <span className="text-[9px] text-center text-slate-400 font-bold mt-0.5">{mn.name}</span>
                   </div>
                 );
               })}
@@ -164,14 +148,10 @@ export const DatabaseForm = ({ setIsOpenForm }: DatabaseFormType) => {
                   type="number"
                   placeholder="Ккал"
                   className={`w-full bg-slate-50 border rounded-lg px-1 py-1.5 text-center outline-none focus:border-indigo-500 text-xs font-bold transition-colors ${
-                    isError && newProduct.calories <= 0
-                      ? "border-red-500"
-                      : "border-slate-200"
+                    isError && newProduct.calories <= 0 ? "border-red-500" : "border-slate-200"
                   }`}
                 />
-                <span className="text-[9px] text-center text-indigo-600 font-bold mt-0.5">
-                  Ккал
-                </span>
+                <span className="text-[9px] text-center text-indigo-600 font-bold mt-0.5">Ккал</span>
               </div>
             </div>
           </div>
