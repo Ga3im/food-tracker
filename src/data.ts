@@ -371,7 +371,14 @@ export const foodDatabase: BaseProduct[] = [
     fats: 15.0,
     carbs: 3.0,
   },
-
+  {
+    id: "410",
+    name: "Яичный желток",
+    calories: 320,
+    proteins: 16,
+    fats: 27,
+    carbs: 1,
+  },
   // === ХЛЕБ И ВЫПЕЧКА ===
   {
     id: "500",
@@ -561,7 +568,7 @@ export const foodDatabase: BaseProduct[] = [
     fats: 0.2,
     carbs: 10,
   },
-    {
+  {
     id: "709",
     name: "Слива",
     calories: 45,

@@ -44,37 +44,23 @@ export const Form = () => {
     }
   }, [editedProduct]);
 
-  // useEffect(() => {
-  //   if (!isAutoKBJU || !editedProduct) return;
+  useEffect(() => {
+    if (!isAutoKBJU) return;
+    const foundProduct = foodDatabase.find(
+      (p) => p.name.toLowerCase().trim() === currentProduct.productName.toLowerCase().trim()
+    );
 
-  //   const foundProduct = foodDatabase.find(
-  //     (p) =>
-  //       p.name.toLowerCase().trim() ===
-  //       product.productName.toLowerCase().trim()
-  //   );
-
-  //   if (foundProduct) {
-  //     dispatch(
-  //       setProduct({
-  //         ...product,
-  //         proteins: foundProduct.proteins,
-  //         fats: foundProduct.fats,
-  //         carbs: foundProduct.carbs,
-  //         calories: foundProduct.calories,
-  //       })
-  //     );
-  //   } else {
-  //     dispatch(
-  //       setProduct({
-  //         ...product,
-  //         proteins: 0,
-  //         fats: 0,
-  //         carbs: 0,
-  //         calories: 0,
-  //       })
-  //     );
-  //   }
-  // }, [product.productName, isAutoKBJU, editedProduct]);
+    if (foundProduct) {
+      setCurrentProduct({
+        ...currentProduct,
+        proteins: foundProduct.proteins,
+        fats: foundProduct.fats,
+        carbs: foundProduct.carbs,
+        calories: foundProduct.calories,
+      });
+    }
+    console.log(currentProduct);
+  }, [currentProduct.productName, isAutoKBJU]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -166,19 +152,15 @@ export const Form = () => {
                   }`}
                 />
 
-                {!editedProduct && (
-                  <button
-                    type="button"
-                    onClick={() => setIsAutoKBJU(!isAutoKBJU)}
-                    className={`absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-lg transition-all ${
-                      isAutoKBJU
-                        ? "bg-indigo-600 text-white shadow-sm"
-                        : "bg-slate-200 text-slate-600 hover:bg-slate-300"
-                    }`}
-                  >
-                    Авто
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={() => setIsAutoKBJU(!isAutoKBJU)}
+                  className={`absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-lg transition-all ${
+                    isAutoKBJU ? "bg-indigo-600 text-white shadow-sm" : "bg-slate-200 text-slate-600 hover:bg-slate-300"
+                  }`}
+                >
+                  Авто
+                </button>
               </div>
               <datalist id="pwa-food-suggestions">
                 {foodDatabase.map((p, idx) => (

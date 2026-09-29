@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { MealEntry, MealType, DailyGoalsType, DeleteProductGroup, ProductGroup, BaseProduct } from "../types";
 import { format } from "date-fns";
-import { addProductToDatabaseOffline, deleteProductOffline, loadOfflineData } from ".";
+import { addProductToDatabaseOffline, deleteProductDatabaseOffline, deleteProductOffline, loadOfflineData } from ".";
 
 export const initialFormState: MealEntry = {
   meal: "",
@@ -206,7 +206,18 @@ export const mealSlice = createSlice({
       .addCase(addProductToDatabaseOffline.fulfilled, (state, action) => {
         if (!state.databaseProducts) state.databaseProducts = [];
         state.databaseProducts.push(action.payload);
-      });
+      })
+   .addCase(deleteProductDatabaseOffline.fulfilled, (state, action) => {
+  const deletedProductId = action.payload; // Сюда прилетает ID в виде строки
+  
+  if (state.databaseProducts) {
+    // Явно перезаписываем массив новым отфильтрованным списком
+    state.databaseProducts = state.databaseProducts.filter(
+      (item) => item.id !== deletedProductId
+    );
+  }
+})
+
   },
 });
 

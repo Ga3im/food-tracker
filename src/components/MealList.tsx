@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import { format } from "date-fns";
 import { deleteProductOffline, useAppDispatch, useAppSelector } from "../store";
 import { copyProduct, editProduct } from "../store/mealsSlice";
 import type { MealEntry } from "../types";
 import { useParams } from "react-router-dom";
+import { useContextMenu } from "../hooks/useContextMenu";
 
 export type Totals = {
   calories: number;
@@ -14,37 +15,15 @@ export type Totals = {
 };
 
 export const MealList = () => {
-  const [contextMenu, setContextMenu] = useState<{
-    x: number;
-    y: number;
-    item: MealEntry;
-  } | null>(null);
-
   const { productsData, selectedDate } = useAppSelector((state) => state.meal);
   const dispatch = useAppDispatch();
   const { mealId } = useParams();
 
   const dateKey = format(selectedDate, "dd.MM.yy");
-  const touchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isMenuOpening = useRef<boolean>(false);
   const dayData = productsData?.find((p) => p.date === dateKey);
 
-  useEffect(() => {
-    const handleClose = () => {
-      if (!isMenuOpening.current) {
-        setContextMenu(null);
-      }
-      isMenuOpening.current = false; // Сбрасываем флаг после прохода цикла событий
-    };
-
-    window.addEventListener("mousedown", handleClose);
-    window.addEventListener("touchstart", handleClose);
-
-    return () => {
-      window.removeEventListener("mousedown", handleClose);
-      window.removeEventListener("touchstart", handleClose);
-    };
-  }, []);
+  const { contextMenu, setContextMenu, handleContextMenu, handleTouchStart, clearTouchTimer } =
+    useContextMenu<MealEntry>();
 
   const filteredItems = useMemo(() => {
     return dayData?.items.filter((item) => item.meal === mealId) || [];
@@ -78,52 +57,6 @@ export const MealList = () => {
   const handleCopy = (item: MealEntry) => {
     dispatch(copyProduct(item));
     setContextMenu(null);
-  };
-
-  const openMenuAtCoordinates = (clientX: number, clientY: number, item: MealEntry) => {
-    const menuWidth = 170;
-    const menuHeight = 140;
-    const screenWidth = window.innerWidth;
-    const screenHeight = window.innerHeight;
-
-    const x = clientX + menuWidth > screenWidth ? screenWidth - menuWidth - 15 : clientX;
-    const y = clientY + menuHeight > screenHeight ? clientY - menuHeight - 5 : clientY;
-
-    setContextMenu({ x, y, item });
-  };
-
-  // Обработка правого клика мыши (ПК)
-  const handleContextMenu = (e: React.MouseEvent, item: MealEntry) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    isMenuOpening.current = true;
-    openMenuAtCoordinates(e.clientX, e.clientY, item);
-  };
-
-  // Начало касания (Мобильные)
-  const handleTouchStart = (e: React.TouchEvent, item: MealEntry) => {
-    if (e.touches.length > 1) return; // Игнорируем мультитач
-
-    const touch = e.touches[0]; // Важно: берем первый палец
-    const travelX = touch.clientX;
-    const travelY = touch.clientY;
-
-    if (touchTimer.current) clearTimeout(touchTimer.current);
-
-    touchTimer.current = setTimeout(() => {
-      isMenuOpening.current = true;
-      openMenuAtCoordinates(travelX, travelY, item);
-      touchTimer.current = null;
-    }, 600); // 600мс для удержания
-  };
-
-  // Очистка таймера, если пользователь отпустил палец или скроллит
-  const clearTouchTimer = () => {
-    if (touchTimer.current) {
-      clearTimeout(touchTimer.current);
-      touchTimer.current = null;
-    }
   };
 
   return (

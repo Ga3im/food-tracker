@@ -11,31 +11,29 @@ export const SettingPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [protein, setProtein] = useState<boolean>(
-    dailyGoals.protein > 0 || false
-  );
-  const [fat, setFat] = useState<boolean>(dailyGoals.fat > 0 || false);
-  const [carbs, setCarbs] = useState<boolean>(dailyGoals.carb > 0 || false);
-  const [calorie, setСalorie] = useState<boolean>(dailyGoals.cals > 0 || false);
+  const [protein, setProtein] = useState<boolean>(dailyGoals.proteins > 0 || false);
+  const [fat, setFat] = useState<boolean>(dailyGoals.fats > 0 || false);
+  const [carbs, setCarbs] = useState<boolean>(dailyGoals.carbs > 0 || false);
+  const [calorie, setСalorie] = useState<boolean>(dailyGoals.calories > 0 || false);
 
   const handleBackClick = () => {
     navigate(routes.main);
   };
 
   const changeProtein = (value: number) => {
-    dispatch(setDailyGoals({ ...dailyGoals, protein: value }));
+    dispatch(setDailyGoals({ ...dailyGoals, proteins: value }));
   };
 
   const changeFat = (value: number) => {
-    dispatch(setDailyGoals({ ...dailyGoals, fat: value }));
+    dispatch(setDailyGoals({ ...dailyGoals, fats: value }));
   };
 
   const changeCarb = (value: number) => {
-    dispatch(setDailyGoals({ ...dailyGoals, carb: value }));
+    dispatch(setDailyGoals({ ...dailyGoals, carbs: value }));
   };
 
   const changeCals = (value: number) => {
-    dispatch(setDailyGoals({ ...dailyGoals, cals: value }));
+    dispatch(setDailyGoals({ ...dailyGoals, calories: value }));
   };
 
   return (
@@ -50,7 +48,7 @@ export const SettingPage = () => {
             unit="гр"
             isChecked={protein}
             onChangeCheckbox={() => setProtein(!protein)}
-            value={dailyGoals.protein}
+            value={dailyGoals.proteins}
             onChange={changeProtein}
           >
             Белки
@@ -59,7 +57,7 @@ export const SettingPage = () => {
             unit="гр"
             isChecked={fat}
             onChange={changeFat}
-            value={dailyGoals.fat}
+            value={dailyGoals.fats}
             onChangeCheckbox={() => setFat(!fat)}
           >
             Жиры
@@ -68,7 +66,7 @@ export const SettingPage = () => {
             unit="гр"
             isChecked={carbs}
             onChange={changeCarb}
-            value={dailyGoals.carb}
+            value={dailyGoals.carbs}
             onChangeCheckbox={() => setCarbs(!carbs)}
           >
             Углеводы
@@ -76,7 +74,7 @@ export const SettingPage = () => {
           <MacroGoalRow
             unit="Ккал"
             isChecked={calorie}
-            value={dailyGoals.cals}
+            value={dailyGoals.calories}
             onChange={changeCals}
             onChangeCheckbox={() => setСalorie(!calorie)}
           >
@@ -84,7 +82,9 @@ export const SettingPage = () => {
           </MacroGoalRow>
         </div>
       </div>
-      <Link className="inline-block text-[#0600ff] underline active:text-[#0400b3] active:scale-95" to='database'>Настроить базу данных</Link>
+      <Link className="inline-block text-[#0600ff] underline active:text-[#0400b3] active:scale-95" to="database">
+        Настроить базу данных
+      </Link>
     </div>
   );
 };

@@ -124,6 +124,25 @@ export const addProductToDatabaseOffline = createAsyncThunk(
   }
 );
 
+export const deleteProductDatabaseOffline = createAsyncThunk(
+  "meal/deleteProductDatabaseOffline",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      if (!db.foodDatabase) {
+        throw new Error("Таблица 'foodDatabase' не объявлена в классе Dexie!");
+      }
+
+      // Удаляем запись из IndexedDB по её уникальному ID
+      await db.foodDatabase.delete(id); 
+
+      // Возвращаем ID, чтобы редюсер знал, какой элемент убрать из UI-стейта
+      return id;
+    } catch (error: any) {
+      console.error("Ошибка при удалении из IndexedDB:", error);
+      return rejectWithValue(error?.message || "Не удалось удалить продукт");
+    }
+  }
+);
 
 const store = configureStore({
   reducer: {
