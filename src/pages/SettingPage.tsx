@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../store";
 import { setDailyGoals } from "../store/mealsSlice";
 import { MacroGoalRow } from "../components/MacroGoalRow";
 import { BackButton } from "../components/BackButton";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { routes } from "../pages/router";
 
 export const SettingPage = () => {
@@ -84,6 +84,7 @@ export const SettingPage = () => {
           </MacroGoalRow>
         </div>
       </div>
+      <Link className="inline-block text-[#0600ff] underline active:text-[#0400b3] active:scale-95" to='database'>Настроить базу данных</Link>
     </div>
   );
 };

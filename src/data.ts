@@ -49,6 +49,7 @@ export const products: ProductGroup[] = [
 ];
 
 export interface BaseProduct {
+  id: string;
   name: string;
   calories: number;
   proteins: number;
@@ -59,6 +60,7 @@ export interface BaseProduct {
 export const foodDatabase: BaseProduct[] = [
   // === МЯСО И ПТИЦА ===
   {
+    id: "1",
     name: "Куриное филе (сырое)",
     calories: 113,
     proteins: 23.6,
@@ -66,6 +68,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 0,
   },
   {
+    id: "2",
     name: "Куриное филе (отварное)",
     calories: 153,
     proteins: 30.4,
@@ -73,6 +76,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 0,
   },
   {
+    id: "3",
     name: "Куриное бедро (без кожи)",
     calories: 130,
     proteins: 19.0,
@@ -80,6 +84,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 0,
   },
   {
+    id: "4",
     name: "Индейка (филе)",
     calories: 115,
     proteins: 24.1,
@@ -87,6 +92,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 0,
   },
   {
+    id: "5",
     name: "Говядина нежирная",
     calories: 158,
     proteins: 22.2,
@@ -94,6 +100,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 0,
   },
   {
+    id: "6",
     name: "Свинина вырезка",
     calories: 142,
     proteins: 20.0,
@@ -101,6 +108,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 0,
   },
   {
+    id: "7",
     name: "Фарш домашний (говядина+свинина)",
     calories: 254,
     proteins: 17.2,
@@ -109,25 +117,56 @@ export const foodDatabase: BaseProduct[] = [
   },
 
   // === РЫБА И МОРЕПРОДУКТЫ ===
-  { name: "Горбуша", calories: 142, proteins: 20.5, fats: 6.5, carbs: 0 },
   {
+    id: "101",
+    name: "Горбуша",
+    calories: 142,
+    proteins: 20.5,
+    fats: 6.5,
+    carbs: 0,
+  },
+  {
+    id: "102",
     name: "Сёмга / Лосось",
     calories: 208,
     proteins: 20.0,
     fats: 14.0,
     carbs: 0,
   },
-  { name: "Треска филе", calories: 78, proteins: 17.7, fats: 0.7, carbs: 0 },
-  { name: "Минтай филе", calories: 72, proteins: 15.9, fats: 0.9, carbs: 0 },
   {
+    id: "103",
+    name: "Треска филе",
+    calories: 78,
+    proteins: 17.7,
+    fats: 0.7,
+    carbs: 0,
+  },
+  {
+    id: "104",
+    name: "Минтай филе",
+    calories: 72,
+    proteins: 15.9,
+    fats: 0.9,
+    carbs: 0,
+  },
+  {
+    id: "105",
     name: "Креветки очищенные",
     calories: 95,
     proteins: 19.0,
     fats: 2.0,
     carbs: 0,
   },
-  { name: "Кальмары", calories: 100, proteins: 18.0, fats: 2.2, carbs: 0 },
   {
+    id: "106",
+    name: "Кальмары",
+    calories: 100,
+    proteins: 18.0,
+    fats: 2.2,
+    carbs: 0,
+  },
+  {
+    id: "107",
     name: "Тунец консервированный (в собств. соку)",
     calories: 96,
     proteins: 21.0,
@@ -137,6 +176,7 @@ export const foodDatabase: BaseProduct[] = [
 
   // === КРУПЫ, МАКАРОНЫ И БОБОВЫЕ (СУХОЙ ПРОДУКТ) ===
   {
+    id: "200",
     name: "Булгур (сухой)",
     calories: 342,
     proteins: 12.3,
@@ -144,6 +184,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 57.6,
   },
   {
+    id: "201",
     name: "Булгур (отварной на воде)",
     calories: 83,
     proteins: 3.1,
@@ -151,6 +192,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 14.1,
   },
   {
+    id: "202",
     name: "Гречневая крупа (сухая)",
     calories: 330,
     proteins: 12.6,
@@ -158,6 +200,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 62.0,
   },
   {
+    id: "203",
     name: "Рис белый (сухой)",
     calories: 344,
     proteins: 6.7,
@@ -165,6 +208,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 78.9,
   },
   {
+    id: "204",
     name: "Овсяные хлопья «Геркулес» (сухие)",
     calories: 352,
     proteins: 12.3,
@@ -172,6 +216,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 61.8,
   },
   {
+    id: "205",
     name: "Макароны (из твердых сортов, сухие)",
     calories: 344,
     proteins: 12.0,
@@ -179,6 +224,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 71.0,
   },
   {
+    id: "206",
     name: "Чечевица (сухая)",
     calories: 297,
     proteins: 24.0,
@@ -186,6 +232,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 46.3,
   },
   {
+    id: "207",
     name: "Нут (сухой)",
     calories: 364,
     proteins: 19.0,
@@ -195,6 +242,7 @@ export const foodDatabase: BaseProduct[] = [
 
   // === ГОТОВЫЕ ГАРНИРЫ ===
   {
+    id: "300",
     name: "Гречка отварная на воде",
     calories: 105,
     proteins: 4.0,
@@ -202,6 +250,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 21.0,
   },
   {
+    id: "301",
     name: "Рис отварной",
     calories: 116,
     proteins: 2.2,
@@ -209,6 +258,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 24.9,
   },
   {
+    id: "302",
     name: "Макароны отварные",
     calories: 130,
     proteins: 4.5,
@@ -216,6 +266,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 26.0,
   },
   {
+    id: "303",
     name: "Овсяная каша на воде",
     calories: 88,
     proteins: 3.0,
@@ -223,6 +274,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 15.0,
   },
   {
+    id: "304",
     name: "Картофельное пюре (на молоке, без масла)",
     calories: 90,
     proteins: 2.0,
@@ -230,6 +282,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 16.0,
   },
   {
+    id: "305",
     name: "Картофель запеченный",
     calories: 93,
     proteins: 2.0,
@@ -239,6 +292,7 @@ export const foodDatabase: BaseProduct[] = [
 
   // === ЯЙЦА И МОЛОЧНЫЕ ПРОДУКТЫ ===
   {
+    id: "400",
     name: "Яйцо куриное (1 шт)",
     calories: 74,
     proteins: 6.5,
@@ -246,17 +300,47 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 0.4,
   },
   {
-    name: "Яичный белок (1 шт)",
-    calories: 17,
+    id: "401",
+    name: "Яичный белок",
+    calories: 50,
     proteins: 11.1,
     fats: 0.2,
     carbs: 0.7,
   },
-  { name: "Творог 5%", calories: 121, proteins: 17.2, fats: 5.0, carbs: 1.8 },
-  { name: "Творог 0%", calories: 71, proteins: 16.5, fats: 0.2, carbs: 1.3 },
-  { name: "Молоко 2.5%", calories: 54, proteins: 2.9, fats: 2.5, carbs: 4.8 },
-  { name: "Кефир 1%", calories: 40, proteins: 2.8, fats: 1.0, carbs: 4.0 },
   {
+    id: "402",
+    name: "Творог 5%",
+    calories: 121,
+    proteins: 17.2,
+    fats: 5.0,
+    carbs: 1.8,
+  },
+  {
+    id: "403",
+    name: "Творог 0%",
+    calories: 71,
+    proteins: 16.5,
+    fats: 0.2,
+    carbs: 1.3,
+  },
+  {
+    id: "404",
+    name: "Молоко 2.5%",
+    calories: 54,
+    proteins: 2.9,
+    fats: 2.5,
+    carbs: 4.8,
+  },
+  {
+    id: "405",
+    name: "Кефир 1%",
+    calories: 40,
+    proteins: 2.8,
+    fats: 1.0,
+    carbs: 4.0,
+  },
+  {
+    id: "406",
     name: "Йогурт натуральный 2%",
     calories: 60,
     proteins: 4.5,
@@ -264,6 +348,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 3.5,
   },
   {
+    id: "407",
     name: "Сыр Российский",
     calories: 363,
     proteins: 23.0,
@@ -271,17 +356,33 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 0,
   },
   {
+    id: "408",
     name: "Сыр Моцарелла",
     calories: 240,
     proteins: 18.0,
     fats: 18.0,
     carbs: 1.0,
   },
-  { name: "Сметана 15%", calories: 162, proteins: 2.6, fats: 15.0, carbs: 3.0 },
+  {
+    id: "409",
+    name: "Сметана 15%",
+    calories: 162,
+    proteins: 2.6,
+    fats: 15.0,
+    carbs: 3.0,
+  },
 
   // === ХЛЕБ И ВЫПЕЧКА ===
-  { name: "Хлеб ржаной", calories: 215, proteins: 6.5, fats: 1.2, carbs: 43.0 },
   {
+    id: "500",
+    name: "Хлеб ржаной",
+    calories: 215,
+    proteins: 6.5,
+    fats: 1.2,
+    carbs: 43.0,
+  },
+  {
+    id: "501",
     name: "Хлеб пшеничный (белый)",
     calories: 262,
     proteins: 7.5,
@@ -289,6 +390,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 50.0,
   },
   {
+    id: "502",
     name: "Хлебцы цельнозерновые",
     calories: 320,
     proteins: 10.0,
@@ -296,6 +398,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 62.0,
   },
   {
+    id: "503",
     name: "Лаваш армянский (тонкий)",
     calories: 275,
     proteins: 8.0,
@@ -304,8 +407,16 @@ export const foodDatabase: BaseProduct[] = [
   },
 
   // === ОВОЩИ И ЗЕЛЕНЬ ===
-  { name: "Огурцы свежие", calories: 15, proteins: 0.8, fats: 0.1, carbs: 2.8 },
   {
+    id: "600",
+    name: "Огурцы свежие",
+    calories: 15,
+    proteins: 0.8,
+    fats: 0.1,
+    carbs: 2.8,
+  },
+  {
+    id: "601",
     name: "Помидоры свежие",
     calories: 20,
     proteins: 0.6,
@@ -313,6 +424,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 4.2,
   },
   {
+    id: "602",
     name: "Капуста белокочанная",
     calories: 27,
     proteins: 1.8,
@@ -320,6 +432,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 4.7,
   },
   {
+    id: "603",
     name: "Перец болгарский сладкий",
     calories: 26,
     proteins: 1.3,
@@ -327,6 +440,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 5.3,
   },
   {
+    id: "604",
     name: "Брокколи свежая",
     calories: 34,
     proteins: 2.8,
@@ -334,44 +448,155 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 6.7,
   },
   {
+    id: "605",
     name: "Морковь свежая",
     calories: 41,
     proteins: 1.3,
     fats: 0.1,
     carbs: 6.9,
   },
-  { name: "Лук репчатый", calories: 41, proteins: 1.4, fats: 0.0, carbs: 10.4 },
-  { name: "Красный лук", calories: 42, proteins: 1.1, fats: 0.2, carbs: 8.5 },
-  { name: "Чеснок", calories: 149, proteins: 6.5, fats: 0.5, carbs: 29.9 },
-  { name: "Листья салата", calories: 12, proteins: 1.2, fats: 0.3, carbs: 1.3 },
+  {
+    id: "606",
+    name: "Лук репчатый",
+    calories: 41,
+    proteins: 1.4,
+    fats: 0.0,
+    carbs: 10.4,
+  },
+  {
+    id: "607",
+    name: "Красный лук",
+    calories: 42,
+    proteins: 1.1,
+    fats: 0.2,
+    carbs: 8.5,
+  },
+  {
+    id: "608",
+    name: "Чеснок",
+    calories: 149,
+    proteins: 6.5,
+    fats: 0.5,
+    carbs: 29.9,
+  },
+  {
+    id: "609",
+    name: "Листья салата",
+    calories: 12,
+    proteins: 1.2,
+    fats: 0.3,
+    carbs: 1.3,
+  },
 
   // === ФРУКТЫ И ЯГОДЫ ===
-  { name: "Банан", calories: 89, proteins: 1.5, fats: 0.2, carbs: 21.8 },
-  { name: "Яблоко", calories: 52, proteins: 0.4, fats: 0.4, carbs: 9.8 },
-  { name: "Груша", calories: 47, proteins: 0.4, fats: 0.3, carbs: 10.3 },
-  { name: "Апельсин", calories: 43, proteins: 0.9, fats: 0.2, carbs: 8.1 },
-  { name: "Авокадо", calories: 160, proteins: 2.0, fats: 14.7, carbs: 1.8 },
-  { name: "Клубника", calories: 32, proteins: 0.8, fats: 0.4, carbs: 7.5 },
   {
+    id: "700",
+    name: "Банан",
+    calories: 89,
+    proteins: 1.5,
+    fats: 0.2,
+    carbs: 21.8,
+  },
+  {
+    id: "701",
+    name: "Яблоко",
+    calories: 52,
+    proteins: 0.4,
+    fats: 0.4,
+    carbs: 9.8,
+  },
+  {
+    id: "702",
+    name: "Груша",
+    calories: 47,
+    proteins: 0.4,
+    fats: 0.3,
+    carbs: 10.3,
+  },
+  {
+    id: "703",
+    name: "Апельсин",
+    calories: 43,
+    proteins: 0.9,
+    fats: 0.2,
+    carbs: 8.1,
+  },
+  {
+    id: "704",
+    name: "Авокадо",
+    calories: 160,
+    proteins: 2.0,
+    fats: 14.7,
+    carbs: 1.8,
+  },
+  {
+    id: "705",
+    name: "Клубника",
+    calories: 32,
+    proteins: 0.8,
+    fats: 0.4,
+    carbs: 7.5,
+  },
+  {
+    id: "706",
     name: "Черника / Голубика",
     calories: 44,
     proteins: 1.0,
     fats: 0.5,
     carbs: 11.0,
   },
-  { name: "Арбуз", calories: 30, proteins: 0.7, fats: 0.1, carbs: 6 },
+  {
+    id: "707",
+    name: "Арбуз",
+    calories: 30,
+    proteins: 0.7,
+    fats: 0.1,
+    carbs: 6,
+  },
+  {
+    id: "708",
+    name: "Мандарин",
+    calories: 45,
+    proteins: 0.8,
+    fats: 0.2,
+    carbs: 10,
+  },
+    {
+    id: "709",
+    name: "Слива",
+    calories: 45,
+    proteins: 0.8,
+    fats: 0.3,
+    carbs: 10.5,
+  },
 
   // === ОРЕХИ, СЕМЕНА И МАСЛА ===
   {
+    id: "800",
     name: "Орехи грецкие",
     calories: 654,
     proteins: 15.2,
     fats: 65.2,
     carbs: 7.0,
   },
-  { name: "Миндаль", calories: 645, proteins: 18.6, fats: 57.7, carbs: 13.0 },
-  { name: "Арахис", calories: 552, proteins: 26.3, fats: 45.2, carbs: 9.9 },
   {
+    id: "801",
+    name: "Миндаль",
+    calories: 645,
+    proteins: 18.6,
+    fats: 57.7,
+    carbs: 13.0,
+  },
+  {
+    id: "802",
+    name: "Арахис",
+    calories: 552,
+    proteins: 26.3,
+    fats: 45.2,
+    carbs: 9.9,
+  },
+  {
+    id: "803",
     name: "Семечки подсолнечника (очищ.)",
     calories: 578,
     proteins: 20.7,
@@ -379,14 +604,23 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 5.0,
   },
   {
+    id: "804",
     name: "Масло подсолнечное",
     calories: 899,
     proteins: 0,
     fats: 99.9,
     carbs: 0,
   },
-  { name: "Масло оливковое", calories: 898, proteins: 0, fats: 99.8, carbs: 0 },
   {
+    id: "805",
+    name: "Масло оливковое",
+    calories: 898,
+    proteins: 0,
+    fats: 99.8,
+    carbs: 0,
+  },
+  {
+    id: "806",
     name: "Масло сливочное 82.5%",
     calories: 748,
     proteins: 0.5,
@@ -396,6 +630,7 @@ export const foodDatabase: BaseProduct[] = [
 
   // === НАПИТКИ ===
   {
+    id: "900",
     name: "Кофе черный (без сахара и молока)",
     calories: 2,
     proteins: 0.2,
@@ -403,6 +638,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 0.3,
   },
   {
+    id: "901",
     name: "Чай черный / зеленый (без сахара)",
     calories: 1,
     proteins: 0.1,
@@ -410,6 +646,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 0.0,
   },
   {
+    id: "902",
     name: "Сок апельсиновый пакетированный",
     calories: 45,
     proteins: 0.7,
@@ -417,6 +654,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 10.2,
   },
   {
+    id: "903",
     name: "Кока-Кола (классическая)",
     calories: 42,
     proteins: 0,
@@ -424,6 +662,7 @@ export const foodDatabase: BaseProduct[] = [
     carbs: 10.6,
   },
   {
+    id: "904",
     name: "Кока-Кола Зеро (без сахара)",
     calories: 0.3,
     proteins: 0,
@@ -432,7 +671,28 @@ export const foodDatabase: BaseProduct[] = [
   },
 
   // === СОУСЫ И СПЕЦИИ ===
-  { name: "Кетчуп", calories: 93, proteins: 1.8, fats: 1.0, carbs: 22.0 },
-  { name: "Майонез 67%", calories: 624, proteins: 3.1, fats: 67.0, carbs: 2.6 },
-  { name: "Соевый соус", calories: 53, proteins: 6.0, fats: 0.6, carbs: 6.6 },
+  {
+    id: "1001",
+    name: "Кетчуп",
+    calories: 93,
+    proteins: 1.8,
+    fats: 1.0,
+    carbs: 22.0,
+  },
+  {
+    id: "1002",
+    name: "Майонез 67%",
+    calories: 624,
+    proteins: 3.1,
+    fats: 67.0,
+    carbs: 2.6,
+  },
+  {
+    id: "1003",
+    name: "Соевый соус",
+    calories: 53,
+    proteins: 6.0,
+    fats: 0.6,
+    carbs: 6.6,
+  },
 ];

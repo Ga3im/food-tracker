@@ -19,7 +19,7 @@ type BackButtonProp = {
 
 export const BackButton = ({ onBackClick }: BackButtonProp) => {
   return (
-    <div className="max-w-6xl mx-auto pt-4">
+    <div className="mx-auto pt-4">
       <button
         onClick={onBackClick}
         className="p-1 -ml-2 text-slate-600 hover:text-indigo-600 transition-colors flex items-center gap-1 group"

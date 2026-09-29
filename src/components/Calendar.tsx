@@ -18,7 +18,7 @@ import { setSelectedDate } from "../store/mealsSlice";
 export const Calendar = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
-  const { product, selectedDate } = useAppSelector((state) => state.meal);
+  const { productsData, selectedDate } = useAppSelector((state) => state.meal);
   const dispatch = useAppDispatch();
 
   const firstDayOfMonth = startOfMonth(currentMonth);
@@ -37,7 +37,7 @@ export const Calendar = () => {
   });
 
   const daysWithData = new Set<string>();
-  product.forEach((item) => {
+  productsData?.forEach((item) => {
     const parts = item.date.split(".");
     if (parts.length !== 3) return;
 

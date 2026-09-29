@@ -10,10 +10,9 @@ import {
   type TypedUseSelectorHook,
 } from "react-redux";
 import { db } from "../db";
-import type { DeleteProductGroup } from "../types";
+import type { BaseProduct, DeleteProductGroup } from "../types";
 import { format } from "date-fns";
 
-// Middleware для фонового сохранения данных в IndexedDB
 const offlineStorageMiddleware: Middleware =
   (storeApi) => (next) => async (action) => {
     const result = next(action);
@@ -26,7 +25,7 @@ const offlineStorageMiddleware: Middleware =
         ? action.payload.date
         : format(action.payload.selectedDate, "dd.MM.yy");
 
-      const dayData = state.meal.product.find((p) => p.date === targetDate);
+      const dayData = state.meal.productsData.find((p) => p.date === targetDate);
       if (dayData) {
         // Сохраняем обновленный день (уже без удаленного продукта) в IndexedDB
         await db.product.put(dayData);
@@ -43,7 +42,7 @@ export const deleteProductOffline = createAsyncThunk(
     const date = format(selectedDate, "dd.MM.yy");
 
     const state = getState() as RootState;
-    const currentProducts = state.meal.product;
+    const currentProducts = state.meal.productsData;
 
     const updatedProducts = currentProducts.map((p) => {
       if (p.date === date) {
@@ -55,7 +54,6 @@ export const deleteProductOffline = createAsyncThunk(
       return p;
     });
 
-    // ИСПРАВЛЕНО: Находим конкретный измененный день и перезаписываем его в таблице product
     const targetDay = updatedProducts.find((p) => p.date === date);
     if (targetDay) {
       await db.product.put(targetDay);
@@ -64,6 +62,68 @@ export const deleteProductOffline = createAsyncThunk(
     return updatedProducts;
   }
 );
+
+import { foodDatabase as staticFoodDatabase } from "../data";
+
+export const loadOfflineData = createAsyncThunk(
+  "meal/loadOfflineData",
+  async () => {
+    try {
+      const offlineProducts = await db.product.toArray();
+      const offlineGoals = await db.dailyGoals.get("current");
+
+      // 1. Пытаемся прочитать данные из IndexedDB
+      let offlineFoodDb = await db.foodDatabase.toArray();
+
+      // 2. Находим продукты из статической базы, которых еще нет в оффлайне (по имени)
+      const missingStaticProducts = staticFoodDatabase.filter(
+        (staticProd) =>
+          !offlineFoodDb.some((offProd) => offProd.name === staticProd.name)
+      );
+
+      // 3. Используем безопасный bulkPut вместо bulkAdd, чтобы избежать падений из-за ID
+      if (missingStaticProducts.length > 0) {
+        try {
+          await db.foodDatabase.bulkPut(missingStaticProducts);
+          offlineFoodDb.push(...missingStaticProducts);
+        } catch (dbError) {
+          offlineFoodDb = [...offlineFoodDb, ...missingStaticProducts];
+        }
+      }
+
+      return {
+        products: offlineProducts.length > 0 ? offlineProducts : null,
+        dailyGoals: offlineGoals || null,
+        foodDatabase: offlineFoodDb,
+      };
+    } catch (globalError: any) {
+      return {
+        products: null,
+        dailyGoals: null,
+        foodDatabase: staticFoodDatabase,
+      };
+    }
+  }
+);
+
+export const addProductToDatabaseOffline = createAsyncThunk(
+  "meal/addProductToDatabaseOffline",
+  async (newProduct: BaseProduct, { rejectWithValue }) => {
+    try {
+      if (!db.foodDatabase) {
+        throw new Error("Таблица 'foodDatabase' не объявлена в классе Dexie!");
+      }
+
+      await db.foodDatabase.put(newProduct); 
+
+      return newProduct;
+    } catch (error: any) {
+      console.error("Ошибка при сохранении в IndexedDB:", error);
+      return rejectWithValue(error?.message || "Не удалось сохранить продукт");
+    }
+  }
+);
+
 
 const store = configureStore({
   reducer: {
