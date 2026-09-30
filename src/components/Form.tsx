@@ -116,7 +116,7 @@ export const Form = () => {
     if (!copiedProduct) return;
     setCurrentProduct({ ...copiedProduct, id: crypto.randomUUID(), meal: mealId as MealType });
     setIsAutoKBJU(false);
-    dispatch(pasteProduct(null));
+    dispatch(pasteProduct());
   };
 
   const handleCancelEdit = () => {
