@@ -47,11 +47,13 @@ export const mealSlice = createSlice({
       action: PayloadAction<{
         date: string;
         product: MealEntry;
+        meal: MealType;
       }>
     ) => {
-      const { date, product } = action.payload;
+      const { date, product, meal } = action.payload;
       const calculatedProduct = {
         ...product,
+        meal: meal,
         proteins: state.isDirectInput
           ? product.proteins
           : Number((+product.proteins * (0.01 * +product.weight)).toFixed(1)),
@@ -76,12 +78,14 @@ export const mealSlice = createSlice({
       action: PayloadAction<{
         updatedProduct: MealEntry;
         date: string;
+        meal: MealType;
       }>
     ) => {
-      const { updatedProduct, date } = action.payload;
+      const { updatedProduct, date, meal } = action.payload;
 
       const calculatedProduct = {
         ...updatedProduct,
+        meal: meal,
         proteins: state.isDirectInput
           ? updatedProduct.proteins
           : Number((+updatedProduct.proteins * (0.01 * +updatedProduct.weight)).toFixed(1)),
@@ -107,31 +111,22 @@ export const mealSlice = createSlice({
     },
     copyProduct: (state, action: PayloadAction<MealEntry>) => {
       const copiedProduct = action.payload as MealEntry;
-      const proteins = (100 * +copiedProduct.proteins) / +copiedProduct.weight;
-      const fats = (100 * +copiedProduct.fats) / +copiedProduct.weight;
-      const carbs = (100 * +copiedProduct.carbs) / +copiedProduct.weight;
+      const proteins = Number((100 * +copiedProduct.proteins) / +copiedProduct.weight).toFixed(1);
+      const fats = Number((100 * +copiedProduct.fats) / +copiedProduct.weight).toFixed(1);
+      const carbs = Number((100 * +copiedProduct.carbs) / +copiedProduct.weight).toFixed(1);
       const calories = (100 * +copiedProduct.calories) / +copiedProduct.weight;
 
-      if (state.copiedProduct) {
-        state.copiedProduct = {
-          ...state.copiedProduct,
-          productName: copiedProduct.productName,
-          weight: copiedProduct.weight,
-          proteins: proteins,
-          fats: fats,
-          carbs: carbs,
-          calories: Math.round(calories),
-        };
-      }
-    },
-    pasteProduct: (state, action: PayloadAction<MealType>) => {
-      const meal = action.payload;
-      if (!state.copiedProduct) return;
-      state.product = {
-        ...state.copiedProduct,
-        meal: meal,
-        id: crypto.randomUUID(),
+      state.copiedProduct = {
+        ...copiedProduct,
+        productName: copiedProduct.productName,
+        weight: copiedProduct.weight,
+        proteins: proteins,
+        fats: fats,
+        carbs: carbs,
+        calories: Math.round(calories),
       };
+    },
+    pasteProduct: (state) => {
       state.copiedProduct = null;
     },
     deleteProduct: (state, action: PayloadAction<DeleteProductGroup>) => {

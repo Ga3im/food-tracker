@@ -4,10 +4,10 @@ import { useAppDispatch, useAppSelector } from "../store";
 import {
   addProduct,
   setIsDirectInput,
-  pasteProduct,
   cancelEdit,
   initialFormState,
   updateProduct,
+  pasteProduct,
 } from "../store/mealsSlice";
 import { foodDatabase } from "../data";
 import type { MealEntry, MealType } from "../types";
@@ -38,9 +38,9 @@ export const Form = () => {
 
   useEffect(() => {
     if (editedProduct) {
-      setCurrentProduct({ ...editedProduct, meal: mealId as MealType });
+      setCurrentProduct({ ...editedProduct });
     } else {
-      setCurrentProduct({ ...product, id: crypto.randomUUID(), meal: mealId as MealType });
+      setCurrentProduct({ ...product, id: crypto.randomUUID() });
     }
   }, [editedProduct]);
 
@@ -59,7 +59,6 @@ export const Form = () => {
         calories: foundProduct.calories,
       });
     }
-    console.log(currentProduct);
   }, [currentProduct.productName, isAutoKBJU]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -72,6 +71,7 @@ export const Form = () => {
         updateProduct({
           date: dateStr,
           updatedProduct: currentProduct,
+          meal: mealId as MealType,
         })
       );
     } else {
@@ -79,6 +79,7 @@ export const Form = () => {
         addProduct({
           date: dateStr,
           product: currentProduct,
+          meal: mealId as MealType,
         })
       );
     }
@@ -110,9 +111,12 @@ export const Form = () => {
     }
   };
 
-  const handlePaste = () => {
-    dispatch(pasteProduct(product.meal));
+  const handlePaste = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    if (!copiedProduct) return;
+    setCurrentProduct({ ...copiedProduct, id: crypto.randomUUID(), meal: mealId as MealType });
     setIsAutoKBJU(false);
+    dispatch(pasteProduct(null));
   };
 
   const handleCancelEdit = () => {
