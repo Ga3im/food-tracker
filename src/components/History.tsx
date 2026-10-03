@@ -1,12 +1,18 @@
 import { format } from "date-fns";
 import { Calendar } from "./Calendar";
-import { useMemo, Fragment } from "react";
+import { Fragment, useMemo } from "react";
 import { ru } from "date-fns/locale";
-import { useAppSelector } from "../store";
+import { useAppDispatch, useAppSelector } from "../store";
 import type { Totals } from "./MealList";
+import { useContextMenu } from "../hooks/useContextMenu";
+import type { MealEntry } from "../types";
+import { copyProduct } from "../store/mealsSlice";
 
 export const History = () => {
   const { productsData, selectedDate } = useAppSelector((state) => state.meal);
+  const { contextMenu, setContextMenu, handleContextMenu, handleTouchStart, clearTouchTimer } =
+    useContextMenu<MealEntry>();
+  const dispatch = useAppDispatch();
 
   const mealOrder = {
     breakfast: 0,
@@ -50,6 +56,11 @@ export const History = () => {
       return getOrder(a.meal) - getOrder(b.meal);
     });
   }, [dayData]);
+
+  const handleCopy = (item: MealEntry) => {
+    dispatch(copyProduct(item));
+    setContextMenu(null);
+  };
 
   return (
     <div className="w-full max-w-4xl mx-auto px-2 font-sans">
@@ -115,7 +126,14 @@ export const History = () => {
                         )}
 
                         {/* Строка с данными продукта */}
-                        <tr className="border-b border-slate-200 last:border-b-0 hover:bg-slate-50/50 transition-colors">
+                        <tr
+                          onContextMenu={(e) => handleContextMenu(e, item)}
+                          onTouchStart={(e) => handleTouchStart(e, item)}
+                          onTouchMove={clearTouchTimer}
+                          onTouchEnd={clearTouchTimer}
+                          onTouchCancel={clearTouchTimer}
+                          className="border-b border-slate-200 last:border-b-0 hover:bg-slate-50/50 transition-colors"
+                        >
                           {/* max-w-0 и truncate здесь критически важны: они заставляют длинный текст сворачиваться в три точки, не раздвигая колонку */}
                           <td className="py-3 px-2 font-semibold text-slate-800 text-sm border-r border-slate-200 break-words">
                             {item.productName}
@@ -185,6 +203,27 @@ export const History = () => {
               </p>
             </div>
           </div>
+        </div>
+      )}
+      {/* Отрендеренное кастомное меню */}
+      {contextMenu && (
+        <div
+          style={{
+            top: `${contextMenu.y}px`,
+            left: `${contextMenu.x}px`,
+            position: "fixed",
+          }}
+          className="z-[9999] pointer-events-auto min-w-[160px] bg-white border border-slate-200 rounded-xl shadow-2xl p-1.5 flex flex-col font-sans select-none"
+          onMouseDown={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+          onContextMenu={(e) => e.preventDefault()}
+        >
+          <button
+            onClick={() => handleCopy(contextMenu.item)}
+            className="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+          >
+            📋 Копировать
+          </button>
         </div>
       )}
     </div>

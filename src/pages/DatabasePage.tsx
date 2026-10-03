@@ -93,16 +93,16 @@ export const Database = () => {
                         {item.name}
                       </td>
                       <td className="text-center py-3 px-2 text-slate-600 text-sm border-r border-slate-200">
-                        {item.proteins.toFixed(1)}
+                        {Number(item.proteins).toFixed(1)}
                       </td>
                       <td className="text-center py-3 px-2 text-slate-600 text-sm border-r border-slate-200">
-                        {item.fats.toFixed(1)}
+                        {Number(item.fats).toFixed(1)}
                       </td>
                       <td className="text-center py-3 px-2 text-slate-600 text-sm border-r border-slate-200">
-                        {item.carbs.toFixed(1)}
+                        {Number(item.carbs).toFixed(1)}
                       </td>
                       <td className="text-center py-3 px-3 font-bold text-slate-900 text-sm">
-                        {item.calories.toFixed(0)}
+                        {Number(item.calories).toFixed(0)}
                       </td>
                     </tr>
                   </div>

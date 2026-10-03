@@ -9,7 +9,6 @@ import {
   updateProduct,
   pasteProduct,
 } from "../store/mealsSlice";
-import { foodDatabase } from "../data";
 import type { MealEntry, MealType } from "../types";
 import { useParams } from "react-router-dom";
 
@@ -30,7 +29,7 @@ export const Form = () => {
   const [isError, setIsError] = useState<boolean>(false);
   const [isAutoKBJU, setIsAutoKBJU] = useState<boolean>(false);
 
-  const { product, editedProduct, isDirectInput, copiedProduct } = useAppSelector((state) => state.meal);
+  const { product, editedProduct, isDirectInput, copiedProduct, databaseProducts } = useAppSelector((state) => state.meal);
   const dispatch = useAppDispatch();
   const { mealId } = useParams();
 
@@ -46,7 +45,7 @@ export const Form = () => {
 
   useEffect(() => {
     if (!isAutoKBJU) return;
-    const foundProduct = foodDatabase.find(
+    const foundProduct = databaseProducts?.find(
       (p) => p.name.toLowerCase().trim() === currentProduct.productName.toLowerCase().trim()
     );
 
@@ -167,7 +166,7 @@ export const Form = () => {
                 </button>
               </div>
               <datalist id="pwa-food-suggestions">
-                {foodDatabase.map((p, idx) => (
+                {databaseProducts?.map((p, idx) => (
                   <option key={idx} value={p.name} />
                 ))}
               </datalist>
