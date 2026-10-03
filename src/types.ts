@@ -35,5 +35,5 @@ export type DailyGoalsType = {
 
 export type DeleteProductGroup = {
   item: MealEntry;
-  selectedDate: Date;
+  selectedDate: Date | string;
 };
