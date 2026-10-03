@@ -79,6 +79,25 @@ export const useContextMenu = <T>() => {
       touchTimer.current = null;
     }
   };
-  
+
   return { contextMenu, setContextMenu, handleContextMenu, handleTouchStart, clearTouchTimer };
 };
+
+// Вызываем эти события у компоненты которая открывает контестное меню
+//  onContextMenu={(e) => handleContextMenu(e, item)}
+// onTouchStart={(e) => handleTouchStart(e, item)}
+// onTouchMove={clearTouchTimer}
+// onTouchEnd={clearTouchTimer}
+// onTouchCancel={clearTouchTimer}
+
+// Пример использования
+// {contextMenu && (
+//       <div
+//         className="z-[9999] pointer-events-auto min-w-[160px] bg-white border border-slate-200 rounded-xl shadow-2xl p-1.5 flex flex-col font-sans select-none"
+//         onMouseDown={(e) => e.stopPropagation()}
+//         onTouchStart={(e) => e.stopPropagation()}
+//         onContextMenu={(e) => e.preventDefault()}
+//       >
+// тут тело контестного меню
+//       </div>
+//     )}

@@ -24,7 +24,6 @@ type DatabaseFormType = {
   setIsOpenForm: Dispatch<SetStateAction<boolean>>;
 };
 
-// Выделяем БЖУК-ключи отдельно для безопасного маппинга
 type NutrientKeys = "proteins" | "fats" | "carbs" | "calories";
 
 export const DatabaseForm = ({ setIsOpenForm }: DatabaseFormType) => {
@@ -33,26 +32,24 @@ export const DatabaseForm = ({ setIsOpenForm }: DatabaseFormType) => {
   const [newProduct, setNewProduct] = useState<BaseProduct>({
     id: crypto.randomUUID(),
     name: "",
-    calories: 0,
-    proteins: 0,
-    fats: 0,
-    carbs: 0,
+    calories: '',
+    proteins: '',
+    fats: '',
+    carbs: '',
   });
 
-  const { isDirectInput, databaseProducts } = useAppSelector((state) => state.meal);
+  const { isDirectInput } = useAppSelector((state) => state.meal);
   const dispatch = useAppDispatch();
-  console.log(databaseProducts);
-
   const handleCloseForm = () => {
     setIsOpenForm(false);
   };
 
   const isFormInvalid =
     !newProduct.name.trim() ||
-    newProduct.calories <= 0 ||
-    newProduct.proteins < 0 ||
-    newProduct.fats < 0 ||
-    newProduct.carbs < 0;
+    +newProduct.calories <= 0 ||
+    +newProduct.proteins < 0 ||
+    +newProduct.fats < 0 ||
+    +newProduct.carbs < 0;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,10 +63,10 @@ export const DatabaseForm = ({ setIsOpenForm }: DatabaseFormType) => {
     setNewProduct({
       id: crypto.randomUUID(),
       name: "",
-      calories: 0,
-      proteins: 0,
-      fats: 0,
-      carbs: 0,
+      calories: '',
+      proteins: '',
+      fats: '',
+      carbs: '',
     });
   };
 
@@ -130,7 +127,7 @@ export const DatabaseForm = ({ setIsOpenForm }: DatabaseFormType) => {
                       min={0}
                       placeholder={mn.name}
                       className={`w-full bg-slate-50 border rounded-lg px-2 py-1.5 text-center outline-none focus:border-indigo-500 text-xs font-bold transition-colors ${
-                        isError && currentValue <= 0 ? "border-red-500" : "border-slate-200"
+                        isError && +currentValue <= 0 ? "border-red-500" : "border-slate-200"
                       }`}
                     />
                     <span className="text-[9px] text-center text-slate-400 font-bold mt-0.5">{mn.name}</span>
@@ -148,7 +145,7 @@ export const DatabaseForm = ({ setIsOpenForm }: DatabaseFormType) => {
                   type="number"
                   placeholder="Ккал"
                   className={`w-full bg-slate-50 border rounded-lg px-1 py-1.5 text-center outline-none focus:border-indigo-500 text-xs font-bold transition-colors ${
-                    isError && newProduct.calories <= 0 ? "border-red-500" : "border-slate-200"
+                    isError && +newProduct.calories <= 0 ? "border-red-500" : "border-slate-200"
                   }`}
                 />
                 <span className="text-[9px] text-center text-indigo-600 font-bold mt-0.5">Ккал</span>

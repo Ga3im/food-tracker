@@ -20,10 +20,10 @@ export type ProductGroup = {
 export type BaseProduct = {
   id: string;
   name: string;
-  calories: number;
-  proteins: number;
-  fats: number;
-  carbs: number;
+  calories: number | string;
+  proteins: number | string;
+  fats: number | string;
+  carbs: number | string;
 };
 
 export type DailyGoalsType = {
