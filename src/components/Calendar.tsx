@@ -51,6 +51,10 @@ export const Calendar = () => {
     }
   });
 
+  const handleSelectDate = (day: Date) => {    
+    dispatch(setSelectedDate(day));
+  };
+
   return (
     <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden max-w-md mx-auto">
       <div className="p-4 flex justify-between items-center bg-indigo-600 text-white">
@@ -58,34 +62,18 @@ export const Calendar = () => {
           onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
           className="p-2 hover:bg-indigo-500 rounded-lg transition-colors"
         >
-          <svg
-            width="20"
-            height="20"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-          >
+          <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <path d="m15 18-6-6 6-6" />
           </svg>
         </button>
 
-        <h2 className="text-lg font-bold capitalize">
-          {format(currentMonth, "LLLL yyyy", { locale: ru })}
-        </h2>
+        <h2 className="text-lg font-bold capitalize">{format(currentMonth, "LLLL yyyy", { locale: ru })}</h2>
 
         <button
           onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
           className="p-2 hover:bg-indigo-500 rounded-lg transition-colors"
         >
-          <svg
-            width="20"
-            height="20"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-          >
+          <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <path d="m9 18 6-6-6-6" />
           </svg>
         </button>
@@ -94,10 +82,7 @@ export const Calendar = () => {
       <div className="p-4">
         <div className="grid grid-cols-7 mb-2">
           {weekDays.map((day) => (
-            <div
-              key={day}
-              className="text-center text-[10px] font-bold text-slate-400 uppercase"
-            >
+            <div key={day} className="text-center text-[10px] font-bold text-slate-400 uppercase">
               {day}
             </div>
           ))}
@@ -113,33 +98,19 @@ export const Calendar = () => {
             return (
               <button
                 key={day.toString()}
-                onClick={() => dispatch(setSelectedDate(day))}
+                onClick={() => handleSelectDate(day)}
                 className={`
                   h-12 w-full rounded-xl flex flex-col items-center justify-center relative transition-all
                   ${!isCurrentMonth ? "text-slate-300" : "text-slate-700"}
-                  ${
-                    isSelected
-                      ? "bg-indigo-600 text-white shadow-md scale-105 z-10"
-                      : "hover:bg-slate-50"
-                  }
+                  ${isSelected ? "bg-indigo-600 text-white shadow-md scale-105 z-10" : "hover:bg-slate-50"}
                   ${isToday && !isSelected ? "border border-indigo-200" : ""}
                 `}
               >
-                <span
-                  className={`text-sm font-semibold ${
-                    isSelected ? "text-white" : ""
-                  }`}
-                >
-                  {format(day, "d")}
-                </span>
+                <span className={`text-sm font-semibold ${isSelected ? "text-white" : ""}`}>{format(day, "d")}</span>
 
                 {/* Точка, если есть данные (имитация) */}
                 {hasData && isCurrentMonth && (
-                  <div
-                    className={`w-1 h-1 rounded-full mt-0.5 ${
-                      isSelected ? "bg-white" : "bg-indigo-400"
-                    }`}
-                  />
+                  <div className={`w-1 h-1 rounded-full mt-0.5 ${isSelected ? "bg-white" : "bg-indigo-400"}`} />
                 )}
               </button>
             );
@@ -150,10 +121,7 @@ export const Calendar = () => {
       {/* Инфо-панель снизу */}
       <div className="px-6 py-3 bg-slate-50 border-t border-slate-100 flex justify-between items-center text-xs">
         <span className="text-slate-500">
-          Выбрано:{" "}
-          <b className="text-slate-700">
-            {format(selectedDate, "d MMMM", { locale: ru })}
-          </b>
+          Выбрано: <b className="text-slate-700">{format(selectedDate, "d MMMM", { locale: ru })}</b>
         </span>
         <button
           onClick={() => {

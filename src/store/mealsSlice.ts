@@ -22,7 +22,7 @@ export type MealStateType = {
   editedProduct: MealEntry | null;
   isDirectInput: boolean;
   status: "idle" | "loading" | "succeeded" | "failed";
-  selectedDate: Date;
+  selectedDate: Date | string;
   copiedProduct: MealEntry | null;
 };
 
@@ -175,7 +175,7 @@ export const mealSlice = createSlice({
     setIsDirectInput: (state, action: PayloadAction<boolean>) => {
       state.isDirectInput = action.payload;
     },
-    setSelectedDate: (state, action: PayloadAction<Date>) => {
+    setSelectedDate: (state, action: PayloadAction<Date | string>) => {
       state.selectedDate = action.payload;
     },
   },

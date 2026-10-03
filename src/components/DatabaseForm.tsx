@@ -121,7 +121,7 @@ export const DatabaseForm = ({ setIsOpenForm }: DatabaseFormType) => {
                     <input
                       onFocus={(e) => e.target.select()}
                       onChange={(e) => handleNutrientChange(nutrientKey, e.target.value)}
-                      value={currentValue === 0 ? "" : currentValue}
+                      value={currentValue}
                       step="any"
                       type="number"
                       min={0}
@@ -139,7 +139,7 @@ export const DatabaseForm = ({ setIsOpenForm }: DatabaseFormType) => {
                 <input
                   onFocus={(e) => e.target.select()}
                   onChange={(e) => handleCaloriesChange(e.target.value)}
-                  value={newProduct.calories === 0 ? "" : newProduct.calories}
+                  value={newProduct.calories}
                   step="any"
                   min={0}
                   type="number"
